@@ -1,5 +1,4 @@
 package co.datamechanics.delight
-
 import java.util.concurrent.atomic.AtomicBoolean
 
 import org.apache.spark.internal.Logging
@@ -13,17 +12,31 @@ class DelightListener(sparkConf: SparkConf) extends SparkListener with Logging {
   private val streamingConnector = DelightStreamingConnector.getOrCreate(sparkConf)
 
   /**
-    * Has the heartbeat thread started
-    */
-  private val started: AtomicBoolean = new AtomicBoolean(false)
+  * Conveys whether the logStart event has been sent
+  */
+  private val logStartEventSent: AtomicBoolean = new AtomicBoolean(false)
 
   private def logEvent(event: SparkListenerEvent, flush: Boolean = false, blocking: Boolean = false): Unit = {
+    sendLogStartEventManually()
     try {
       val eventAsString = compact(render(JsonProtocolProxy.jsonProtocol.sparkEventToJson(event)))
       streamingConnector.enqueueEvent(eventAsString, flush = flush, blocking = blocking)
     } catch {
       case e: Exception =>
         logError(s"Failed to log event: ${e.getMessage}", e)
+    }
+  }
+
+  /**
+    * The listener creates the logStart event itself because Spark does not give it
+    * to the listener. This a Spark quirk!
+    */
+  private def sendLogStartEventManually(): Unit = {
+    if(logStartEventSent.compareAndSet(false, true)) {
+      logInfo("Sent the SparkListenerLogStart event manually")
+      logEvent(
+        SparkListenerLogStart(org.apache.spark.SPARK_VERSION)
+      )
     }
   }
 
