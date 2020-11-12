@@ -29,7 +29,7 @@ In the configuration window of the Spark step, add the following lines in the te
 Don't forget to replace the placeholders!
 Latest Spark distributions on EMR use Scala version 2.12.
 
-![configure spark application step on EMR](images/emr_step_configure.png)
+![Configure Spark application step on EMR](images/emr_step_content.png)
 
 ## Second option: Connect to the master node
 
