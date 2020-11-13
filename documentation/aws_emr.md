@@ -29,13 +29,36 @@ In the configuration window of the Spark step, add the following lines in the te
 Don't forget to replace the placeholders!
 Latest Spark distributions on EMR use Scala version 2.12.
 
+Below is a working example with `emr-6.1.0` and Spark `3.0.0`:
+
 ![Configure Spark application step on EMR](images/emr_step_content.png)
+
+Here's the content of the text fields in the example screenshot:
+
+Spark-submit options:
+```
+--class org.apache.spark.examples.SparkPi
+--packages co.datamechanics:delight_2.12:latest-SNAPSHOT
+--repositories https://oss.sonatype.org/content/repositories/snapshots
+--conf spark.extraListeners=co.datamechanics.delight.DelightListener
+--conf spark.delight.accessToken.secret=<replace-with-your-access-token>
+```
+
+Application location:
+```
+/usr/lib/spark/examples/jars/spark-examples.jar
+```
+
+Arguments:
+```
+100
+```
 
 ## Second option: Connect to the master node
 
-Follow instructions to [connect to the master node over SSH](https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-connect-master-node.html).
+Once you've created a long-lived cluster (Cluster launch mode), AWS EMR lets you [connect to the master node over SSH](https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-connect-master-node.html).
 
-Once connected, the `spark-submit` CLI will be available to you.
+From there, the `spark-submit` CLI will be available to you.
 Please follow the [instructions to install Delight with the `spark-submit` CLI](spark_submit.md).
 
-Latest Spark distributions on EMR use Scala version 2.12.
+Please note that latest Spark distributions on EMR use Scala version 2.12.
