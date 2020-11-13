@@ -24,7 +24,8 @@ spark.delight.accessToken.secret: <replace-with-your-access-token>
 ```
 
 Don't forget to replace the placeholders!
-Most Spark distributions on Dataproc use Scala version 2.11.
+The default Spark distribution on Dataproc uses Scala version 2.11.
+Please refer to the [official Dataproc documentation](https://cloud.google.com/dataproc/docs/concepts/versioning/overview) to learn more about releases.
 
 ![Spark job on Dataproc](images/dataproc_configure.png)
 
@@ -39,7 +40,8 @@ To enable Delight, we simply add some Spark properties to the Spark step.
 The script below shows how to do this for an example Spark Pi application running on an ephemeral cluster.
 
 Don't forget to replace the placeholders!
-Most Spark distributions on Dataproc use Scala version 2.11.
+The default Spark distribution on Dataproc uses Scala version 2.11.
+Please refer to the [official Dataproc documentation](https://cloud.google.com/dataproc/docs/concepts/versioning/overview) to learn more about releases.
 
 ```bash
 TEMPLATE_NAME=delight-test-template
