@@ -13,9 +13,10 @@ import org.apache.http.util.EntityUtils
 import org.apache.spark.SparkConf
 import org.apache.spark.internal.Logging
 import org.json4s.JsonAST.JValue
-import org.json4s.jackson.JsonMethods.{compact, render}
+import org.json4s.jackson.JsonMethods.{compact, render, parse}
 
 import scala.collection.{immutable, mutable}
+import scala.util.Try
 
 /**
   * A class responsible for sending messages to the Data Mechanics collector API
@@ -35,6 +36,8 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
   private val maxPollingInterval = Configs.maxPollingInterval(sparkConf)
   private val maxWaitOnEnd = Configs.maxWaitOnEnd(sparkConf)
   private val waitForPendingPayloadsSleepInterval = Configs.waitForPendingPayloadsSleepInterval(sparkConf)
+
+  implicit val formats = org.json4s.DefaultFormats
 
   if(accessTokenOption.isEmpty) {
     logWarning("Delight is not activated because an access token is missing. Go to https://www.datamechanics.co/delight to generate one.")
@@ -60,6 +63,16 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
     */
   private val started: AtomicBoolean = new AtomicBoolean(false)
 
+  /**
+    * Parse an optional return message from the API
+    */
+  private def parseApiReturnMessage(httpResponse: HttpResponse): Option[String] = {
+    Try {
+      val entity = httpResponse.getEntity
+      val body = EntityUtils.toString(entity)
+      (parse(body) \\ "message").extract[Option[String]]
+    }.toOption.flatten
+  }
 
   /**
     * Send a POST request to Data Mechanics collector API ("the server")
@@ -77,12 +90,19 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
     postMethod.setEntity(requestEntity)
 
     val httpResponse: HttpResponse = client.execute(postMethod)
-    EntityUtils.consume(httpResponse.getEntity)
 
+    val apiReturnMessage: Option[String] = parseApiReturnMessage(httpResponse)
     val statusCode = httpResponse.getStatusLine.getStatusCode
 
+    val entity = httpResponse.getEntity
+    EntityUtils.consume(entity)
+
     if (statusCode != 200) {
-      throw new IOException(s"Status $statusCode: ${httpResponse.getStatusLine.getReasonPhrase}")
+      var errorMessage = s"Status $statusCode: ${httpResponse.getStatusLine.getReasonPhrase}."
+      apiReturnMessage.foreach(
+        m => errorMessage += s" ${m}."
+      )
+      throw new IOException(errorMessage)
     }
 
     statusCode
@@ -102,7 +122,7 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
       logInfo(s"Successfully sent heartbeat")
     } catch {
       case e: Exception =>
-        logWarning(s"Failed to send heartbeat to $url: ${e.getMessage}", e)
+        logWarning(s"Failed to send heartbeat to $url: ${e.getMessage}")
     }
   }
 
@@ -120,7 +140,7 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
       logInfo(s"Successfully sent ack")
     } catch {
       case e: Exception =>
-        logWarning(s"Failed to send ack to $url: ${e.getMessage}", e)
+        logWarning(s"Failed to send ack to $url: ${e.getMessage}")
     }
   }
 
@@ -139,7 +159,7 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
       logInfo(s"Successfully sent payload")
     } catch {
       case e: Exception =>
-        logWarning(s"Failed to send payload to $url: ${e.getMessage}", e)
+        logWarning(s"Failed to send payload to $url: ${e.getMessage}")
         throw e
     }
   }
@@ -206,7 +226,7 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
       nbPendingEvents = pendingEvents.synchronized(pendingEvents.size)
     }
     if(nbPendingEvents > 0) {
-      logWarning(s"Stopped waiting for pending events to be sent (max wait duration is ${maxWaitOnEnd}s), although $nbPendingEvents were remaining")
+      logWarning(s"Stopped waiting for pending events to be sent (max wait duration is ${maxWaitOnEnd}), although $nbPendingEvents were remaining")
     }
     sendAck()
   }
