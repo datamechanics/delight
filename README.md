@@ -30,6 +30,8 @@ Here are the available instructions:
 - [Google Cloud Dataproc](documentation/dataproc.md)
 - [Spark on Kubernetes operator](documentation/spark_operator.md)
 
+Delight is currently not available on Databricks, we're actively working to resolve the [issue](https://github.com/datamechanics/delight/issues/1).
+
 ## Contact Us
 
 If you have a question, first please read our [FAQ](https://www.datamechanics.co/delight), and [contact us](https://www.datamechanics.co/contact-us) if you don't find your answer. If you want to report a bug or issue a feature request, please use Github issues. Thank you!
