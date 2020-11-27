@@ -4,3 +4,4 @@ project/
 target/
 .idea/
 .DS_Store
+spark_distributions/
