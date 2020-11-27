@@ -1,10 +1,10 @@
 
-crossScalaVersions := Seq("2.11.12", "2.12.12")
+scalaVersion := "2.11.12"
 
 organization := "co.datamechanics"
 name := "delight"
-version := "latest-SNAPSHOT"
+version := "2.3-latest-SNAPSHOT"
 
-libraryDependencies += "org.apache.spark" %% "spark-core" % "2.4.3"
+libraryDependencies += "org.apache.spark" %% "spark-core" % "2.3.0"
 
 publishTo := sonatypePublishToBundle.value

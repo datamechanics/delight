@@ -3,10 +3,10 @@ api_key := ''
 spark_distributions_folder := 'spark_distributions'
 
 build:
-    sbt +package
+    sbt package
 
 publish:
-    sbt +publishSigned
+    sbt publishSigned
 
 download_spark_distribution url:
     #!/usr/bin/env sh
@@ -38,7 +38,7 @@ run_test_app spark_distribution_folder spark_version scala_version:
     {{spark_distribution_folder}}/bin/spark-submit \
     --class org.apache.spark.examples.SparkPi \
     --master 'local[2]' \
-    --packages co.datamechanics:delight_{{scala_version}}:latest-SNAPSHOT \
+    --packages co.datamechanics:delight_{{scala_version}}:2.3-latest-SNAPSHOT \
     --repositories https://oss.sonatype.org/content/repositories/snapshots \
     --conf spark.delight.accessToken.secret={{api_key}} \
     --conf spark.delight.collector.url={{collector_url}} \
@@ -50,7 +50,7 @@ run_test_app_local_jar spark_distribution_folder spark_version scala_version:
     {{spark_distribution_folder}}/bin/spark-submit \
     --class org.apache.spark.examples.SparkPi \
     --master 'local[2]' \
-    --jars target/scala-{{scala_version}}/delight_{{scala_version}}-latest-SNAPSHOT.jar \
+    --jars target/scala-{{scala_version}}/delight_{{scala_version}}-2.3-latest-SNAPSHOT.jar \
     --repositories https://oss.sonatype.org/content/repositories/snapshots \
     --conf spark.delight.accessToken.secret={{api_key}} \
     --conf spark.delight.collector.url={{collector_url}} \

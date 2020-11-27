@@ -112,14 +112,6 @@ class DelightListener(sparkConf: SparkConf) extends SparkListener with Logging {
     logEvent(event, flush = true)
   }
 
-  override def onExecutorBlacklistedForStage(event: SparkListenerExecutorBlacklistedForStage): Unit = {
-    logEvent(event, flush = true)
-  }
-
-  override def onNodeBlacklistedForStage(event: SparkListenerNodeBlacklistedForStage): Unit = {
-    logEvent(event, flush = true)
-  }
-
   override def onExecutorUnblacklisted(event: SparkListenerExecutorUnblacklisted): Unit = {
     logEvent(event, flush = true)
   }
