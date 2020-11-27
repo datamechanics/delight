@@ -32,6 +32,17 @@ Here are the available instructions:
 
 Delight is currently not available on Databricks, we're actively working to resolve the [issue](https://github.com/datamechanics/delight/issues/1).
 
+## Compatibility
+
+Delight is compatible with Spark `2.4.0` to Spark `3.0.1` with the following Maven coordinates:
+
+`co.datamechanics:delight_<replace-with-your-scala-version-2.11-or-2.12>:latest-SNAPSHOT`
+
+We also maintain a version compatible with Spark `2.3.x`.
+Please use the following Maven coordinates to use it:
+
+`co.datamechanics:delight_2.11:2.3-latest-SNAPSHOT`
+
 ## Contact Us
 
 If you have a question, first please read our [FAQ](https://www.datamechanics.co/delight), and [contact us](https://www.datamechanics.co/contact-us) if you don't find your answer. If you want to report a bug or issue a feature request, please use Github issues. Thank you!
