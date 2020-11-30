@@ -13,7 +13,12 @@ We hope that the current release (free hosted Spark History Server) will be usef
 ## Architecture
 
 Delight consists of an open-sourced [SparkListener](https://mallikarjuna_g.gitbooks.io/spark/content/spark-SparkListener.html) which runs inside your Spark applications and which is very simple to install.
-This agent streams Spark event logs to our servers. You can then access the Spark UI for all your Spark applications through our [website](https://www.datamechanics.co/delight).
+
+![Delight Architecture](https://uploads-ssl.webflow.com/5e72486289a61e0d8c9dbb56/5fb2b739e125da142c5bbf46_ezgif.com-gif-maker.png)
+
+This agent streams Spark events to our servers. These are not your application logs, these are non-sensitive metadata about your Spark application execution: how long each task took, how much data was read/written, how much memory was used, etc. In particular, Spark events do **not** contain personally identifiable information. Here's a [sample](https://uploads-ssl.webflow.com/5e724862760345325327026c/5fc104251c29738912ed5a94_Sample%20Event%20Log%20Delight.png) Spark event. 
+
+You can then access the Spark UI for all your Spark applications through our [website](https://www.datamechanics.co/delight).
 
 ## Installation
 
