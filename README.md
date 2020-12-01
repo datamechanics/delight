@@ -48,6 +48,9 @@ Please use the following Maven coordinates to use it:
 
 `co.datamechanics:delight_2.11:2.3-latest-SNAPSHOT`
 
+**Delight is compatible with Pyspark.**
+But even if you use Python, you'll have to determine the Scala version used by your Spark distribution and fill out the placeholder above in the Maven coordinates!
+
 ## Contact Us
 
 If you have a question, first please read our [FAQ](https://www.datamechanics.co/delight), and [contact us](https://www.datamechanics.co/contact-us) if you don't find your answer. If you want to report a bug or issue a feature request, please use Github issues. Thank you!
