@@ -34,8 +34,7 @@ Here are the available instructions:
 - [AWS EMR](documentation/aws_emr.md)
 - [Google Cloud Dataproc](documentation/dataproc.md)
 - [Spark on Kubernetes operator](documentation/spark_operator.md)
-
-Delight is currently not available on Databricks, we're actively working to resolve the [issue](https://github.com/datamechanics/delight/issues/1).
+- [Databricks](documentation/databricks.md)
 
 ## Compatibility
 
