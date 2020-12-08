@@ -35,6 +35,7 @@ Here are the available instructions:
 - [Google Cloud Dataproc](documentation/dataproc.md)
 - [Spark on Kubernetes operator](documentation/spark_operator.md)
 - [Databricks](documentation/databricks.md)
+- [Apache Livy](documentation/apache_livy.md)
 
 ## Compatibility
 
