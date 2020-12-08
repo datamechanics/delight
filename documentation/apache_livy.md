@@ -27,7 +27,7 @@ POST /batches
   "numExecutors": 2,
   "name": "application-name",
   "conf": {
-    "spark.jars.packages": "o.datamechanics:delight_<replace-with-your-scala-version-2.11-or-2.12>:latest-SNAPSHOT",
+    "spark.jars.packages": "co.datamechanics:delight_<replace-with-your-scala-version-2.11-or-2.12>:latest-SNAPSHOT",
     "spark.jars.repositories": "https://oss.sonatype.org/content/repositories/snapshots",
     "spark.delight.accessToken.secret": "<your access token>",
     "spark.extraListeners": "co.datamechanics.delight.DelightListener"
