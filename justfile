@@ -5,7 +5,7 @@ spark_distributions_folder := 'spark_distributions'
 build:
     sbt +package
 
-pusblish:
+publish:
     sbt +publishSigned
 
 download_spark_distribution url:
