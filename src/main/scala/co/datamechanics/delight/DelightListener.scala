@@ -9,6 +9,13 @@ import org.json4s.jackson.JsonMethods.{compact, render}
 
 class DelightListener(sparkConf: SparkConf) extends SparkListener with Logging {
 
+  /**
+   * Activates memory metrics collection for Spark 3.0.0 and above.
+   * For Spark versions below 3.0.0, these configs have no effect.
+   */
+  sparkConf.set("spark.executor.processTreeMetrics.enabled", "true")
+  sparkConf.set("spark.executor.metrics.pollingInterval", "10ms")
+
   private val streamingConnector = DelightStreamingConnector.getOrCreate(sparkConf)
 
   /**
