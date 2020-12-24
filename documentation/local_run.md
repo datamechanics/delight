@@ -43,3 +43,10 @@ And a working example for Spark 2.4.7:
   examples/jars/spark-examples_2.11-2.4.7.jar \
   100
 ```
+
+> Delight provides information about memory usage for Spark version 3.0.0 and above.
+> For this feature to work, you'll need the proc filesystem (`procfs`) and the command `pgrep` available in your runtime.
+>
+> In Debian-based systems for example, `pgrep` is available as part of the `procps` package that you can install with ```apt-get install procps```.
+>
+> Note that `procfs` is not available in OS X.
