@@ -43,9 +43,10 @@ object Configs {
   }
 
   def generateDMAppId(sparkConf: SparkConf): String = {
-    val appName: String = sparkConf.get("spark.delight.appNameOverride", sparkConf.get("spark.app.name", "undefined")).replace(" ", "-")
+    val appName: String = sparkConf.get("spark.delight.appNameOverride", sparkConf.get("spark.app.name", "undefined"))
+    val sanitizedAppName: String = appName.replaceAll("\\W", "-").replaceAll("--*", "-").stripSuffix("-")
     val uuid: String = java.util.UUID.randomUUID().toString
-    s"$appName-$uuid"
+    s"$sanitizedAppName-$uuid"
   }
 
 }
