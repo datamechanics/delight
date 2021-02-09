@@ -27,6 +27,7 @@ import scala.util.Try
 class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
 
   private val dmAppId = DmAppId(Configs.generateDMAppId(sparkConf))
+  private val delightURL = Configs.delightUrl(sparkConf).stripSuffix("/")
   private val collectorURL = Configs.collectorUrl(sparkConf).stripSuffix("/")
   private val bufferMaxSize = Configs.bufferMaxSize(sparkConf)
   private val payloadMaxSize = Configs.payloadMaxSize(sparkConf)
@@ -237,6 +238,7 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
       logWarning(s"Stopped waiting for pending events to be sent (max wait duration is ${maxWaitOnEnd}), although $nbPendingEvents were remaining")
     }
     sendAck()
+    logInfo(s"Application will be available in a few minutes on Delight at this url: $delightURL/apps/$dmAppId")
   }
 
   /**
@@ -308,6 +310,7 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
       }
       heartbeatThread.start()
       logInfo("Started DelightStreamingConnector heartbeat thread")
+      logInfo(s"Application will be available on Delight a few minutes after it completes at this url: $delightURL/apps/$dmAppId")
     }
   }
 
