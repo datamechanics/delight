@@ -6,6 +6,10 @@ import scala.concurrent.duration._
 
 object Configs {
 
+  def delightUrl(sparkConf: SparkConf): String = {
+    sparkConf.get("spark.delight.url", "https://delight.datamechanics.co/")
+  }
+
   def collectorUrl(sparkConf: SparkConf): String = {
     sparkConf.get("spark.delight.collector.url", "https://api.delight.datamechanics.co/collector/")
   }

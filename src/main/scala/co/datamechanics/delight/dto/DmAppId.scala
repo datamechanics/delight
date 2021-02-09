@@ -8,4 +8,6 @@ case class DmAppId(dmAppId: String) {
   def toJson: JValue = {
     "dmAppId" -> dmAppId
   }
+
+  override def toString: String = dmAppId
 }
