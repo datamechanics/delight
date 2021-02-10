@@ -6,7 +6,7 @@
 
 - June 2020: Project starts with a [blog post](https://www.datamechanics.co/blog-post/building-a-better-spark-ui-data-mechanics-delight) detailing our vision.
 - November 2020: First release consisting of a free hosted Spark History Server (no new metrics and visualizations yet).
-- January 2021 (expected): Release of the overview screen with new metrics and visualizations.
+- Q1 2021 (expected): Release of the overview screen with new metrics and visualizations.
 
 We hope that the current release (free hosted Spark History Server) will be useful to the Spark developers who cannot easily spin up a SHS on their Spark platform.
 
