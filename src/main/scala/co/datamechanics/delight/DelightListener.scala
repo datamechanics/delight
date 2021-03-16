@@ -3,8 +3,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 import org.apache.spark.internal.Logging
 import org.apache.spark.scheduler._
-import org.apache.spark.{JsonProtocolProxy, SparkConf}
-import org.json4s.jackson.JsonMethods.{compact, render}
+import org.apache.spark.SparkConf
 
 
 class DelightListener(sparkConf: SparkConf) extends SparkListener with Logging {
@@ -30,8 +29,7 @@ class DelightListener(sparkConf: SparkConf) extends SparkListener with Logging {
   ) {
     sendLogStartEventManually()
     try {
-      val eventAsString = compact(render(JsonProtocolProxy.jsonProtocol.sparkEventToJson(event)))
-      streamingConnector.enqueueEvent(eventAsString, flush = flush, blocking = blocking)
+      streamingConnector.enqueueEvent(event, flush = flush, blocking = blocking)
     } catch {
       case e: Exception =>
         logError(s"Failed to log event: ${e.getMessage}", e)
