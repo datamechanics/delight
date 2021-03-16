@@ -46,6 +46,10 @@ object Configs {
     sparkConf.getDouble("spark.delight.waitForPendingPayloadsSleepIntervalSecs", 1).seconds
   }
 
+  def logDuration(sparkConf: SparkConf): Boolean = {
+    sparkConf.getBoolean("spark.delight.logDuration", false)
+  }
+
   def generateDMAppId(sparkConf: SparkConf): String = {
     val appName: String = sparkConf.get("spark.delight.appNameOverride", sparkConf.get("spark.app.name", "undefined"))
     val sanitizedAppName: String = appName.replaceAll("\\W", "-").replaceAll("--*", "-").stripSuffix("-")

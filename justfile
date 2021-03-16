@@ -55,6 +55,7 @@ run_test_app_local_jar spark_distribution_folder spark_version scala_version:
     --repositories https://oss.sonatype.org/content/repositories/snapshots \
     --conf spark.delight.accessToken.secret={{api_key}} \
     --conf spark.delight.collector.url={{collector_url}} \
+    --conf spark.delight.logDuration=true \
     --conf spark.extraListeners=co.datamechanics.delight.DelightListener \
     {{spark_distribution_folder}}/examples/jars/spark-examples_{{scala_version}}-{{spark_version}}.jar \
     100

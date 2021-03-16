@@ -37,6 +37,7 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
   private val maxPollingInterval = Configs.maxPollingInterval(sparkConf)
   private val maxWaitOnEnd = Configs.maxWaitOnEnd(sparkConf)
   private val waitForPendingPayloadsSleepInterval = Configs.waitForPendingPayloadsSleepInterval(sparkConf)
+  private val shouldLogDuration = Configs.logDuration(sparkConf)
 
   implicit val formats = org.json4s.DefaultFormats
 
@@ -127,7 +128,7 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
     * - Uses a dedicated httpClient to avoid collision with the one used by the main thread
     * - Payload is a Json Object containing the dm_app_id
     */
-  def sendHeartbeat(): Unit = {
+  def sendHeartbeat(): Unit = Utils.time(shouldLogDuration, "sendHeartbeat") {
     val url = s"$collectorURL/heartbeat"
     try {
       sendRequest(httpClientHeartbeat, url, dmAppId.toJson, "Successfully sent heartbeat")
@@ -161,7 +162,7 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
     * - Uses sendRequest and catch thrown exceptions
     * - Payload is a is a Json Object representing a StreamingPayload
     */
-  private def publishPayload(payload: StreamingPayload): Unit = {
+  private def publishPayload(payload: StreamingPayload): Unit = Utils.time(shouldLogDuration, "publishPayload") {
     val url = s"$collectorURL/bulk"
 
     try {
@@ -183,7 +184,9 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
     * - This method waits for all messages to be sent to the server if `blocking` set to true
     * - This method is thread-safe
     */
-  def enqueueEvent(content: String, flush: Boolean = false, blocking: Boolean = false): Unit = {
+  def enqueueEvent(content: String, flush: Boolean = false, blocking: Boolean = false): Unit = Utils.time(
+    shouldLogDuration, "enqueueEvent"
+  ) {
     if(accessTokenOption.nonEmpty) {
       val bufferSize = eventsBuffer.synchronized {
         eventsBuffer += content
@@ -199,7 +202,7 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
     *
     * - This method waits for all events to be sent to the server if `blocking` set to true
     */
-  private def flushEvents(blocking: Boolean = false): Unit = {
+  private def flushEvents(blocking: Boolean = false): Unit = Utils.time(shouldLogDuration, "flushEvents") {
 
     eventsBuffer.synchronized {
       pendingEvents.synchronized {
@@ -226,7 +229,7 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
     * - Do not wait more than `maxWaitOnEnd` seconds
     * - Send the ack event to notify the app has terminated
     */
-  private def waitForPendingEvents(): Unit = {
+  private def waitForPendingEvents(): Unit = Utils.time(shouldLogDuration, "waitForPendingEvents") {
     val startWaitingTime = Utils.currentTime
     var nbPendingEvents: Int = pendingEvents.synchronized(pendingEvents.size)
     while((Utils.currentTime - startWaitingTime) < maxWaitOnEnd.toMillis && nbPendingEvents > 0) {
@@ -248,7 +251,7 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
     *   `publishPendingEvents` is doubled (exponential retry)
     * - Time before next call to `publishPendingEvents` is reset to its initial value if a call has worked
     */
-  private def publishPendingEvents(): Unit = {
+  private def publishPendingEvents(): Unit = Utils.time(shouldLogDuration, "publishPendingEvents") {
     var errorHappened = false
     var nbPendingEvents: Int = pendingEvents.synchronized(pendingEvents.size)
     while(nbPendingEvents > 0 && !errorHappened) {
@@ -287,7 +290,7 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
     *
     * - The threads are started only is they have not started yet.
     */
-  private def startIfNecessary(): Unit = {
+  private def startIfNecessary(): Unit = Utils.time(shouldLogDuration, "startIfNecessary") {
     if(started.compareAndSet(false, true)) {
       val pollingThread = new Thread {
         override def run() {
