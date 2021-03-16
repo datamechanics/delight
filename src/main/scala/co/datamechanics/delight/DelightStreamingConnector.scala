@@ -4,16 +4,17 @@ import java.io.IOException
 import java.util.concurrent.atomic.AtomicBoolean
 
 import co.datamechanics.delight.dto.{Counters, DmAppId, StreamingPayload}
-import org.apache.http.{HttpEntity, HttpResponse}
+import org.apache.http.HttpResponse
 import org.apache.http.client.HttpClient
 import org.apache.http.client.methods.HttpPost
 import org.apache.http.entity.StringEntity
 import org.apache.http.impl.client.DefaultHttpClient
 import org.apache.http.util.EntityUtils
-import org.apache.spark.SparkConf
+import org.apache.spark.{JsonProtocolProxy, SparkConf}
 import org.apache.spark.internal.Logging
+import org.apache.spark.scheduler.SparkListenerEvent
 import org.json4s.JsonAST.JValue
-import org.json4s.jackson.JsonMethods.{compact, render, parse}
+import org.json4s.jackson.JsonMethods.{compact, parse, render}
 
 import scala.collection.{immutable, mutable}
 import scala.util.Try
@@ -53,11 +54,11 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
   private val httpClient: HttpClient = new DefaultHttpClient()
   private val httpClientHeartbeat: HttpClient = new DefaultHttpClient()
 
-  private val eventsBuffer: mutable.Buffer[String] = mutable.Buffer()
+  private val eventsBuffer: mutable.Buffer[SparkListenerEvent] = mutable.Buffer()
   private var eventsCounter: Int = 0
   private var payloadCounter: Int = 0
 
-  private val pendingEvents: mutable.Queue[String] = new mutable.Queue[String]()
+  private val pendingEvents: mutable.Queue[SparkListenerEvent] = new mutable.Queue[SparkListenerEvent]()
   private var currentPollingInterval = pollingInterval
 
   /**
@@ -184,12 +185,12 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
     * - This method waits for all messages to be sent to the server if `blocking` set to true
     * - This method is thread-safe
     */
-  def enqueueEvent(content: String, flush: Boolean = false, blocking: Boolean = false): Unit = Utils.time(
+  def enqueueEvent(event: SparkListenerEvent, flush: Boolean = false, blocking: Boolean = false): Unit = Utils.time(
     shouldLogDuration, "enqueueEvent"
   ) {
     if(accessTokenOption.nonEmpty) {
       val bufferSize = eventsBuffer.synchronized {
-        eventsBuffer += content
+        eventsBuffer += event
         eventsBuffer.length
       }
       startIfNecessary()
@@ -262,7 +263,7 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
         publishPayload(
           StreamingPayload(
             dmAppId,
-            firstEvents,
+            firstEvents.map(e => compact(render(JsonProtocolProxy.jsonProtocol.sparkEventToJson(e)))),
             Counters(eventsCounter, payloadCounter)
           )
         )
