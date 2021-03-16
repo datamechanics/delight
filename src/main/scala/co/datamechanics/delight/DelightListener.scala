@@ -16,6 +16,8 @@ class DelightListener(sparkConf: SparkConf) extends SparkListener with Logging {
   sparkConf.set("spark.executor.processTreeMetrics.enabled", "true")
   sparkConf.set("spark.executor.metrics.pollingInterval", "10ms")
 
+  private val shouldLogDuration = Configs.logDuration(sparkConf)
+
   private val streamingConnector = DelightStreamingConnector.getOrCreate(sparkConf)
 
   /**
@@ -23,7 +25,9 @@ class DelightListener(sparkConf: SparkConf) extends SparkListener with Logging {
   */
   private val logStartEventSent: AtomicBoolean = new AtomicBoolean(false)
 
-  private def logEvent(event: SparkListenerEvent, flush: Boolean = false, blocking: Boolean = false): Unit = {
+  private def logEvent(event: SparkListenerEvent, flush: Boolean = false, blocking: Boolean = false): Unit = Utils.time(
+    shouldLogDuration, "logEvent"
+  ) {
     sendLogStartEventManually()
     try {
       val eventAsString = compact(render(JsonProtocolProxy.jsonProtocol.sparkEventToJson(event)))
@@ -38,7 +42,9 @@ class DelightListener(sparkConf: SparkConf) extends SparkListener with Logging {
     * The listener creates the logStart event itself because Spark does not give it
     * to the listener. This a Spark quirk!
     */
-  private def sendLogStartEventManually(): Unit = {
+  private def sendLogStartEventManually(): Unit = Utils.time(
+    shouldLogDuration, "sendLogStartEventManually"
+  ) {
     if(logStartEventSent.compareAndSet(false, true)) {
       logInfo("Sent the SparkListenerLogStart event manually")
       logEvent(
