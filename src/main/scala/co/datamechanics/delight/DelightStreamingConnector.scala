@@ -296,8 +296,10 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
       val pollingThread = new Thread {
         override def run() {
           while (true) {
+            val start = System.currentTimeMillis()
             publishPendingEvents()
-            Thread.sleep(currentPollingInterval.toMillis)
+            val end = System.currentTimeMillis()
+            Thread.sleep(math.max(currentPollingInterval.toMillis - (end - start), 0))
           }
         }
       }
@@ -307,8 +309,10 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
         override def run() {
           while (true) {
             logDebug("Logged heartbeat")
+            val start = System.currentTimeMillis()
             sendHeartbeat()
-            Thread.sleep(heartbeatInterval.toMillis)
+            val end = System.currentTimeMillis()
+            Thread.sleep(math.max(heartbeatInterval.toMillis - (end - start), 0))
           }
         }
       }
