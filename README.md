@@ -2,13 +2,28 @@
 
 [Delight](https://www.datamechanics.co/delight) is a free and cross-platform Spark UI replacement with new metrics and visualizations that will delight you!
 
-## Timeline
+## Overview
 
-- June 2020: Project starts with a [blog post](https://www.datamechanics.co/blog-post/building-a-better-spark-ui-data-mechanics-delight) detailing our vision.
-- November 2020: First release consisting of a free hosted Spark History Server (no new metrics and visualizations yet).
-- Q1 2021 (expected): Release of the overview screen with new metrics and visualizations.
+The [Delight web dashboard](https://delight.datamechanics.co) lists your completed Spark applications with high-level information and metrics.
+<p align="center">
+<a href="documentation/images/delight_dashboard.png"><img src="documentation/images/delight_dashboard.png" width="80%" align="middle"></a>
+</p>
 
-We hope that the current release (free hosted Spark History Server) will be useful to the Spark developers who cannot easily spin up a SHS on their Spark platform.
+When you click on a specific line, you can view Executor CPU Metrics, aligned with a timeline of your Spark jobs and stages, so that it's easy for you to understand what is the performance bottleneck of your application. 
+
+For example, Delight made it obvious that this application (left) suffered from slow shuffle. 
+After using instances with mounted local SSDs (right), the application performance improved by over 10x.
+
+<a href="documentation/images/before.png"><img src="documentation/images/before.png" width="45%"></a>
+<a href="documentation/images/after.png"><img src="documentation/images/after.png" width="45%"></a>
+
+
+## History & Roadmap
+
+- June 2020: Project starts with a widely shared [blog post](https://www.datamechanics.co/blog-post/building-a-better-spark-ui-data-mechanics-delight) detailing our vision.
+- November 2020: [First release](https://www.datamechanics.co/blog-post/were-releasing-a-free-cross-platform-spark-ui-and-spark-history-server). A dashboard with one-click access to a Hosted Spark History Server (Spark UI).
+- March 2021: Release of the overview screen with Executor CPU metrics and Spark timeline.
+- Coming Next: Executor Memory Metrics, Stage page, Executor Page.
 
 ## Architecture
 
@@ -39,7 +54,7 @@ Here are the available instructions:
 
 ## Compatibility
 
-Delight is compatible with Spark `2.4.0` to Spark `3.0.1` with the following Maven coordinates:
+Delight is compatible with Spark `2.4.0` to Spark `3.1.1` with the following Maven coordinates:
 
 `co.datamechanics:delight_<replace-with-your-scala-version-2.11-or-2.12>:latest-SNAPSHOT`
 
@@ -53,13 +68,13 @@ But even if you use Python, you'll have to determine the Scala version used by y
 
 ## Contact Us
 
-If you have a question, first please read our [FAQ](https://www.datamechanics.co/delight), and [contact us](https://www.datamechanics.co/contact-us) if you don't find your answer. If you want to report a bug or issue a feature request, please use Github issues. Thank you!
+If you have a question, first please read our [FAQ](https://www.datamechanics.co/delight). You can also contact us using the chat window once you're logged on your dashboard. If you want to report a bug or issue a feature request, please use Github issues. Thank you!
 
 ## Frequently asked questions
 
 ### NoSuchMethodError
 
-I installed Delight and saw the following error in the driver logs. How to solve it?
+I installed Delight and saw the following error in the driver logs. How do I solve it?
 
 ```
 Exception in thread "main" java.lang.NoSuchMethodError: org.apache.spark.internal.Logging.$init$(Lorg/apache/spark/internal/Logging;)V
