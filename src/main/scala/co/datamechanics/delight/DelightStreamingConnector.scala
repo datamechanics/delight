@@ -17,6 +17,7 @@ import org.json4s.JsonAST.JValue
 import org.json4s.jackson.JsonMethods.{compact, parse, render}
 
 import scala.collection.{immutable, mutable}
+import scala.concurrent.duration.FiniteDuration
 import scala.util.Try
 
 /**
@@ -285,6 +286,21 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
     }
   }
 
+  private def startRepeatThread(interval: FiniteDuration)(action: => Unit): Thread = {
+    val thread = new Thread {
+      override def run() {
+        while (true) {
+          val start = currentTime
+          val _ = action
+          val end = currentTime
+          Thread.sleep(math.max(interval.toMillis - (end - start), 0))
+        }
+      }
+    }
+    thread.start()
+    thread
+  }
+
   /**
     * Start the polling thread that sends all pending payloads to the server every `currentPollingInterval` seconds.
     * Start the heartbeat thread that `sendHeartbeat()` every `heartbeatInterval` seconds.
@@ -293,30 +309,14 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
     */
   private def startIfNecessary(): Unit = time(shouldLogDuration, "startIfNecessary") {
     if(started.compareAndSet(false, true)) {
-      val pollingThread = new Thread {
-        override def run() {
-          while (true) {
-            val start = currentTime
-            publishPendingEvents()
-            val end = currentTime
-            Thread.sleep(math.max(currentPollingInterval.toMillis - (end - start), 0))
-          }
-        }
+      startRepeatThread(currentPollingInterval) {
+        publishPendingEvents()
       }
-      pollingThread.start()
       logInfo("Started DelightStreamingConnector polling thread")
-      val heartbeatThread = new Thread {
-        override def run() {
-          while (true) {
-            logDebug("Logged heartbeat")
-            val start = currentTime
-            sendHeartbeat()
-            val end = currentTime
-            Thread.sleep(math.max(heartbeatInterval.toMillis - (end - start), 0))
-          }
-        }
+      startRepeatThread(heartbeatInterval) {
+        logDebug("Logged heartbeat")
+        sendHeartbeat()
       }
-      heartbeatThread.start()
       logInfo("Started DelightStreamingConnector heartbeat thread")
       logInfo(s"Application will be available on Delight a few minutes after it completes at this url: $delightURL/apps/$dmAppId")
     }
