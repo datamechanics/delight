@@ -25,7 +25,6 @@ After using instances with mounted local SSDs (right), the application performan
 - March 2021: Release of the overview screen with Executor CPU metrics and Spark timeline.
 - Coming Next: Executor Memory Metrics, Stage page, Executor Page.
 
-
 ## Architecture
 
 Delight consists of an open-sourced [SparkListener](https://mallikarjuna_g.gitbooks.io/spark/content/spark-SparkListener.html) which runs inside your Spark applications and which is very simple to install.
