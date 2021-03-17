@@ -1,11 +1,11 @@
-package co.datamechanics.delight
+package co.datamechanics
 
 import java.io.ByteArrayOutputStream
 import java.util.zip.GZIPOutputStream
 
 import org.apache.spark.internal.Logging
 
-object Utils extends Logging {
+package object delight extends Logging {
 
   def currentTime: Long = System.currentTimeMillis()
 
