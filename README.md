@@ -23,7 +23,7 @@ After using instances with mounted local SSDs (right), the application performan
 - June 2020: Project starts with a widely shared [blog post](https://www.datamechanics.co/blog-post/building-a-better-spark-ui-data-mechanics-delight) detailing our vision.
 - November 2020: [First release](https://www.datamechanics.co/blog-post/were-releasing-a-free-cross-platform-spark-ui-and-spark-history-server). A dashboard with one-click access to a Hosted Spark History Server (Spark UI).
 - March 2021: Release of the overview screen with Executor CPU metrics and Spark timeline.
-- Coming Next: Executor Memory Metrics, Stage Page, Executor Page, Tuning Recommendations.
+- Coming Next: Executor Memory Metrics, Stage page, Executor Page.
 
 
 ## Architecture
