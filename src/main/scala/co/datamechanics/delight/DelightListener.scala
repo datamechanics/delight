@@ -29,12 +29,12 @@ class DelightListener(sparkConf: SparkConf) extends SparkListener with Logging {
   */
   private val logStartEventSent: AtomicBoolean = new AtomicBoolean(false)
 
-  private def logEvent(event: SparkListenerEvent, flush: Boolean = false, blocking: Boolean = false): Unit = Utils.time(
+  private def logEvent(event: SparkListenerEvent, flush: Boolean = false, blocking: Boolean = false): Unit = time(
     shouldLogDuration, "logEvent"
   ) {
     sendLogStartEventManually()
     try {
-      streamingConnector.enqueueEvent(event, flush = flush, blocking = blocking)
+      streamingConnector.enqueueEvent(event, flush, blocking)
     } catch {
       case e: Exception =>
         logError(s"Failed to log event: ${e.getMessage}", e)
@@ -45,7 +45,7 @@ class DelightListener(sparkConf: SparkConf) extends SparkListener with Logging {
     * The listener creates the logStart event itself because Spark does not give it
     * to the listener. This a Spark quirk!
     */
-  private def sendLogStartEventManually(): Unit = Utils.time(
+  private def sendLogStartEventManually(): Unit =time(
     shouldLogDuration, "sendLogStartEventManually"
   ) {
     if(logStartEventSent.compareAndSet(false, true)) {
