@@ -5,13 +5,13 @@ spark_distributions_folder := 'spark_distributions'
 build:
     sbt +package
 
-pusblish:
+publish:
     sbt +publishSigned
 
 download_spark_distribution url:
     #!/usr/bin/env sh
     set -e
-    cd {{spark_distributions_folder}}/
+    mkdir -p {{spark_distributions_folder}} && cd {{spark_distributions_folder}}
     URL={{url}}
     ARCHIVE="${URL##*/}"
     FOLDER="${ARCHIVE%.*}"
@@ -31,8 +31,9 @@ download_2_4_0: (download_spark_distribution 'https://archive.apache.org/dist/sp
 download_2_4_7: (download_spark_distribution 'https://archive.apache.org/dist/spark/spark-2.4.7/spark-2.4.7-bin-hadoop2.7.tgz')
 download_2_4_7_2_12: (download_spark_distribution 'https://archive.apache.org/dist/spark/spark-2.4.7/spark-2.4.7-bin-without-hadoop-scala-2.12.tgz')
 download_3_0_1: (download_spark_distribution 'https://archive.apache.org/dist/spark/spark-3.0.1/spark-3.0.1-bin-hadoop3.2.tgz')
+download_3_1_1: (download_spark_distribution 'https://archive.apache.org/dist/spark/spark-3.1.1/spark-3.1.1-bin-hadoop3.2.tgz')
 
-download_all_spark_distributions: download_2_3_2 download_2_4_0 download_2_4_7 download_2_4_7_2_12 download_3_0_1
+download_all_spark_distributions: download_2_3_2 download_2_4_0 download_2_4_7 download_2_4_7_2_12 download_3_0_1 download_3_1_1
 
 run_test_app spark_distribution_folder spark_version scala_version:
     {{spark_distribution_folder}}/bin/spark-submit \
@@ -63,9 +64,11 @@ run_2_4_0: (run_test_app 'spark_distributions/spark-2.4.0-bin-hadoop2.7' '2.4.0'
 run_2_4_7: (run_test_app 'spark_distributions/spark-2.4.7-bin-hadoop2.7' '2.4.7' '2.11')
 run_2_4_7_2_12: (run_test_app 'spark_distributions/spark-2.4.7-bin-without-hadoop-scala-2.12' '2.4.7' '2.12')
 run_3_0_1: (run_test_app 'spark_distributions/spark-3.0.1-bin-hadoop3.2' '3.0.1' '2.12')
+run_3_1_1: (run_test_app 'spark_distributions/spark-3.1.1-bin-hadoop3.2' '3.1.1' '2.12')
 
 run_local_jar_2_3_2: (run_test_app_local_jar 'spark_distributions/spark-2.3.2-bin-hadoop2.7' '2.3.2' '2.11')
 run_local_jar_2_4_0: (run_test_app_local_jar 'spark_distributions/spark-2.4.0-bin-hadoop2.7' '2.4.0' '2.11')
 run_local_jar_2_4_7: (run_test_app_local_jar 'spark_distributions/spark-2.4.7-bin-hadoop2.7' '2.4.7' '2.11')
 run_local_jar_2_4_7_2_12: (run_test_app_local_jar 'spark_distributions/spark-2.4.7-bin-without-hadoop-scala-2.12' '2.4.7' '2.12')
 run_local_jar_3_0_1: (run_test_app_local_jar 'spark_distributions/spark-3.0.1-bin-hadoop3.2' '3.0.1' '2.12')
+run_local_jar_3_1_1: (run_test_app_local_jar 'spark_distributions/spark-3.1.1-bin-hadoop3.2' '3.1.1' '2.12')

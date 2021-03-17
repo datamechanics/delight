@@ -31,3 +31,8 @@ A real-world example of submission instrumented with Delight would look like thi
   /path/to/examples.jar \
   1000
 ```
+
+> Delight provides information about memory usage for Spark version 3.0.0 and above.
+> For this feature to work, you'll need the proc filesystem (`procfs`) and the command `pgrep` available in your runtime.
+>
+> If you're running `spark-submit` on AWS EMR, Google Dataproc, or Databricks, `procfs` and `pgrep` are available. On other systems, you may have to install them. `pgrep` is usually part of the `procps` package on UNIX operating systems.

@@ -73,3 +73,8 @@ spec:
       - name: "test-volume"
         mountPath: "/tmp"
 ```
+
+> Delight provides information about memory usage for Spark version 3.0.0 and above.
+> For this feature to work, you'll need the proc filesystem (`procfs`) and the command `pgrep` available in your runtime.
+>
+> You may have to install `pgrep` in your Docker image. In Debian-based systems for example, `pgrep` is available as part of the `procps` package that you can install with ```apt-get install procps```.

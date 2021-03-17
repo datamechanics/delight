@@ -27,6 +27,7 @@ import scala.util.Try
 class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
 
   private val dmAppId = DmAppId(Configs.generateDMAppId(sparkConf))
+  private val delightURL = Configs.delightUrl(sparkConf).stripSuffix("/")
   private val collectorURL = Configs.collectorUrl(sparkConf).stripSuffix("/")
   private val bufferMaxSize = Configs.bufferMaxSize(sparkConf)
   private val payloadMaxSize = Configs.payloadMaxSize(sparkConf)
@@ -63,6 +64,9 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
     */
   private val started: AtomicBoolean = new AtomicBoolean(false)
 
+  private val isRateLimited: AtomicBoolean = new AtomicBoolean(false)
+
+
   /**
     * Parse an optional return message from the API
     */
@@ -77,11 +81,16 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
   /**
     * Send a POST request to Data Mechanics collector API ("the server")
     *
-    * - Anything other than a 200 status code counts as failed.
     * - Handles access token
+    * - Status Code:
+    *   -> 200: Request is a success
+    *   -> 429: RateLimit has been reached for this app
+    *   -> Other: Throw IOException
     *
     */
-  private def sendRequest(client: HttpClient, url: String, payload: JValue): Int = {
+  private def sendRequest(client: HttpClient, url: String, payload: JValue, successMsg: String): Unit = {
+    if (isRateLimited.get) return
+
     val payloadAsString = compact(render(payload))
     val requestEntity = new StringEntity(payloadAsString)
 
@@ -97,15 +106,18 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
     val entity = httpResponse.getEntity
     EntityUtils.consume(entity)
 
-    if (statusCode != 200) {
-      var errorMessage = s"Status $statusCode: ${httpResponse.getStatusLine.getReasonPhrase}."
-      apiReturnMessage.foreach(
-        m => errorMessage += s" ${m}."
-      )
-      throw new IOException(errorMessage)
+    statusCode match {
+      case 200 => logInfo(successMsg)
+      case 429 =>
+        isRateLimited.set(true)
+        logError(s"RateLimit has been reached, collection will now stop")
+      case _ =>
+        var errorMessage = s"Status $statusCode: ${httpResponse.getStatusLine.getReasonPhrase}."
+        apiReturnMessage.foreach(
+          m => errorMessage += s" $m."
+        )
+        throw new IOException(errorMessage)
     }
-
-    statusCode
   }
 
   /**
@@ -118,8 +130,7 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
   def sendHeartbeat(): Unit = {
     val url = s"$collectorURL/heartbeat"
     try {
-      sendRequest(httpClientHeartbeat, url, dmAppId.toJson)
-      logInfo(s"Successfully sent heartbeat")
+      sendRequest(httpClientHeartbeat, url, dmAppId.toJson, "Successfully sent heartbeat")
     } catch {
       case e: Exception =>
         logWarning(s"Failed to send heartbeat to $url: ${e.getMessage}")
@@ -136,8 +147,7 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
     val url = s"$collectorURL/ack"
 
     try {
-      sendRequest(httpClient, url, dmAppId.toJson)
-      logInfo(s"Successfully sent ack")
+      sendRequest(httpClient, url, dmAppId.toJson, "Successfully sent ack")
     } catch {
       case e: Exception =>
         logWarning(s"Failed to send ack to $url: ${e.getMessage}")
@@ -155,8 +165,7 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
     val url = s"$collectorURL/bulk"
 
     try {
-      sendRequest(httpClient, url, payload.toJson)
-      logInfo(s"Successfully sent payload")
+      sendRequest(httpClient, url, payload.toJson, "Successfully sent payload")
     } catch {
       case e: Exception =>
         logWarning(s"Failed to send payload to $url: ${e.getMessage}")
@@ -229,6 +238,7 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
       logWarning(s"Stopped waiting for pending events to be sent (max wait duration is ${maxWaitOnEnd}), although $nbPendingEvents were remaining")
     }
     sendAck()
+    logInfo(s"Application will be available in a few minutes on Delight at this url: $delightURL/apps/$dmAppId")
   }
 
   /**
@@ -300,6 +310,7 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
       }
       heartbeatThread.start()
       logInfo("Started DelightStreamingConnector heartbeat thread")
+      logInfo(s"Application will be available on Delight a few minutes after it completes at this url: $delightURL/apps/$dmAppId")
     }
   }
 

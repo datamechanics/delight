@@ -16,6 +16,7 @@ We detail instructions for both cases below.
 Follow these [instructions to create a cluster and run a Spark job](https://cloud.google.com/dataproc/docs/quickstarts/quickstart-console).
 
 When configuring the job, add the following properties to the application:
+
 ```
 spark.jars.repositories: https://oss.sonatype.org/content/repositories/snapshots
 spark.jars.packages: co.datamechanics:delight_<replace-with-your-scala-version-2.11-or-2.12>:latest-SNAPSHOT
@@ -24,7 +25,15 @@ spark.delight.accessToken.secret: <replace-with-your-access-token>
 ```
 
 Don't forget to replace the placeholders!
-The default Spark distribution on Dataproc uses Scala version 2.11.
+The Scala version depends on the Dataproc distribution you're using:
+
+| Dataproc version | Spark version | Scala version |
+| :--------------- | :------------ | :------------ |
+| preview          | 3.0.1         | 2.12          |
+| 1.5              | 2.4.7         | 2.12          |
+| 1.4              | 2.4.7         | 2.11          |
+| 1.3              | 2.3.4         | 2.11          |
+
 Please refer to the [official Dataproc documentation](https://cloud.google.com/dataproc/docs/concepts/versioning/overview) to learn more about releases.
 
 ![Spark job on Dataproc](images/dataproc_configure.png)
@@ -39,9 +48,7 @@ To enable Delight, we simply add some Spark properties to the Spark step.
 
 The script below shows how to do this for an example Spark Pi application running on an ephemeral cluster.
 
-Don't forget to replace the placeholders!
-The default Spark distribution on Dataproc uses Scala version 2.11.
-Please refer to the [official Dataproc documentation](https://cloud.google.com/dataproc/docs/concepts/versioning/overview) to learn more about releases.
+Don't forget to replace the API key placeholder!
 
 ```bash
 TEMPLATE_NAME=delight-test-template
@@ -49,7 +56,7 @@ REGION=us-west1
 CLUSTER_NAME=delight-test-cluster
 PROPERTIES=(
     "spark.jars.repositories=https://oss.sonatype.org/content/repositories/snapshots"
-    "spark.jars.packages=co.datamechanics:delight_<replace-with-your-scala-version-2.11-or-2.12>:latest-SNAPSHOT"
+    "spark.jars.packages=co.datamechanics:delight_2.12:latest-SNAPSHOT"
     "spark.extraListeners=co.datamechanics.delight.DelightListener"
     "spark.delight.accessToken.secret=<replace-with-your-access-token>"
 )
@@ -64,7 +71,8 @@ gcloud dataproc workflow-templates set-managed-cluster $TEMPLATE_NAME \
     --master-machine-type=n1-standard-2 \
     --worker-machine-type=n1-standard-2 \
     --num-workers=2 \
-    --cluster-name=$CLUSTER_NAME
+    --cluster-name=$CLUSTER_NAME \
+    --image-version preview
 
 gcloud dataproc workflow-templates add-job spark \
     --workflow-template=$TEMPLATE_NAME \
@@ -80,3 +88,15 @@ gcloud dataproc workflow-templates instantiate $TEMPLATE_NAME \
 ```
 
 Then move on to the [Dataproc console](https://console.cloud.google.com/dataproc/clusters) to see the cluster being created and the job execution.
+
+Note that in the example script we use the Dataproc version `preview` (parameter `--image-version` in `set-managed-cluster`) and we set the Scala version accordingly to 2.12 in `co.datamechanics:delight_2.12:latest-SNAPSHOT`.
+If you use another Dataproc version, you will have to adjust the Scala version:
+
+| Dataproc version | Spark version | Scala version |
+| :--------------- | :------------ | :------------ |
+| preview          | 3.0.1         | 2.12          |
+| 1.5              | 2.4.7         | 2.12          |
+| 1.4              | 2.4.7         | 2.11          |
+| 1.3              | 2.3.4         | 2.11          |
+
+Please refer to the [official Dataproc documentation](https://cloud.google.com/dataproc/docs/concepts/versioning/overview) to learn more about releases.
