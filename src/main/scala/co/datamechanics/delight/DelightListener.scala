@@ -9,6 +9,11 @@ import org.apache.spark.SparkConf
 class DelightListener(sparkConf: SparkConf) extends SparkListener with Logging {
 
   /**
+   * Adds Delight version to the Spark config
+   */
+  sparkConf.set("spark.delight.version", Configs.delightVersion)
+
+  /**
    * Activates memory metrics collection for Spark 3.0.0 and above.
    * For Spark versions below 3.0.0, these configs have no effect.
    */
