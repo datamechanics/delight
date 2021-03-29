@@ -247,6 +247,26 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
   }
 
   /**
+    * Serialize a SparkListenerEvent and drop it if it can't be serialized
+    *
+    * Unfortunately this can happen on Databricks with the following stacktrace:
+    *
+    * com.fasterxml.jackson.databind.JsonMappingException: Exceeded 2097152 bytes (current = 2100278)
+    * (through reference chain: org.apache.spark.sql.catalyst.expressions.AttributeReference["canonicalized"]->org.apache.spark.s...
+    * ...
+    * Caused by: com.databricks.spark.util.LimitedOutputStream$LimitExceededException: Exceeded 2097152 bytes (current = 2100278)
+    */
+  private def serializeEvent(event: SparkListenerEvent): Option[String] = {
+    try {
+      Some(compact(render(JsonProtocolProxy.jsonProtocol.sparkEventToJson(event))))
+    } catch {
+      case e: Exception =>
+        logWarning(s"Could not serialize event of type ${event.getClass.getCanonicalName} because: ${e.getClass.getCanonicalName}")
+        None
+    }
+  }
+
+  /**
     * Send all pending events to the server.
     *
     * - Stop sending pending events when a call has failed. In this case, time before next call to
@@ -259,12 +279,13 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
     while(nbPendingEvents > 0 && !errorHappened) {
       try {
         val firstEvents = pendingEvents.synchronized(pendingEvents.take(payloadMaxSize)).to[immutable.Seq]
-        eventsCounter += firstEvents.length
+        val serializedEvents = firstEvents.flatMap(serializeEvent)
+        eventsCounter += serializedEvents.length
         payloadCounter += 1
         publishPayload(
           StreamingPayload(
             dmAppId,
-            firstEvents.map(e => compact(render(JsonProtocolProxy.jsonProtocol.sparkEventToJson(e)))),
+            serializedEvents,
             Counters(eventsCounter, payloadCounter)
           )
         )
