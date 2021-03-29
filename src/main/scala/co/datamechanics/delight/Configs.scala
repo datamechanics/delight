@@ -57,6 +57,6 @@ object Configs {
     s"$sanitizedAppName-$uuid"
   }
 
-  val delightVersion: String = "1.0.2"
+  val delightVersion: String = "1.0.3"
 
 }
