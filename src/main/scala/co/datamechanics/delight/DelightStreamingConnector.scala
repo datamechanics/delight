@@ -277,10 +277,10 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
           logInfo(s"Polling interval back to ${pollingInterval.toSeconds}s because last payload was successfully sent")
         }
       } catch {
-        case _: Exception =>
+        case e: Exception =>
           errorHappened = true // stop sending payload queue when an error happened until next retry
           currentPollingInterval = (2 * currentPollingInterval).min(maxPollingInterval)  // exponential retry
-          logWarning(s"Polling interval increased to ${currentPollingInterval.toSeconds}s because last payload failed")
+          logWarning(s"Polling interval increased to ${currentPollingInterval.toSeconds}s because last payload failed", e)
       }
       nbPendingEvents = pendingEvents.synchronized(pendingEvents.size)
     }
