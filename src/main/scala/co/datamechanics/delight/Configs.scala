@@ -11,7 +11,10 @@ object Configs {
   }
 
   def collectorUrl(sparkConf: SparkConf): String = {
-    sparkConf.get("spark.delight.collector.url", "https://api.delight.datamechanics.co/collector/")
+    sparkConf.get(
+      "spark.delight.collector.url",
+      "https://api.delight.datamechanics.co/collector/"
+    )
   }
 
   def bufferMaxSize(sparkConf: SparkConf): Int = {
@@ -23,7 +26,9 @@ object Configs {
   }
 
   def accessTokenOption(sparkConf: SparkConf): Option[String] = {
-    sparkConf.getOption("spark.delight.accessToken.secret") // secret is added here so that Spark redacts this config
+    sparkConf.getOption(
+      "spark.delight.accessToken.secret"
+    ) // secret is added here so that Spark redacts this config
   }
 
   def heartbeatInterval(sparkConf: SparkConf): FiniteDuration = {
@@ -42,8 +47,12 @@ object Configs {
     sparkConf.getDouble("spark.delight.maxWaitOnEndSecs", 10).seconds
   }
 
-  def waitForPendingPayloadsSleepInterval(sparkConf: SparkConf): FiniteDuration = {
-    sparkConf.getDouble("spark.delight.waitForPendingPayloadsSleepIntervalSecs", 1).seconds
+  def waitForPendingPayloadsSleepInterval(
+      sparkConf: SparkConf
+  ): FiniteDuration = {
+    sparkConf
+      .getDouble("spark.delight.waitForPendingPayloadsSleepIntervalSecs", 1)
+      .seconds
   }
 
   def logDuration(sparkConf: SparkConf): Boolean = {
@@ -51,8 +60,12 @@ object Configs {
   }
 
   def generateDMAppId(sparkConf: SparkConf): String = {
-    val appName: String = sparkConf.get("spark.delight.appNameOverride", sparkConf.get("spark.app.name", "undefined"))
-    val sanitizedAppName: String = appName.replaceAll("\\W", "-").replaceAll("--*", "-").stripSuffix("-")
+    val appName: String = sparkConf.get(
+      "spark.delight.appNameOverride",
+      sparkConf.get("spark.app.name", "undefined")
+    )
+    val sanitizedAppName: String =
+      appName.replaceAll("\\W", "-").replaceAll("--*", "-").stripSuffix("-")
     val uuid: String = java.util.UUID.randomUUID().toString
     s"$sanitizedAppName-$uuid"
   }
