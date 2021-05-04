@@ -2,8 +2,8 @@ package co.datamechanics.delight
 
 import java.io.IOException
 import java.util.concurrent.atomic.AtomicBoolean
-
 import co.datamechanics.delight.dto.{Counters, DmAppId, StreamingPayload}
+import co.datamechanics.delight.metrics.{ProcfsMetrics, ProcfsMetricsGetter}
 import org.apache.http.HttpResponse
 import org.apache.http.client.HttpClient
 import org.apache.http.client.methods.HttpPost
@@ -17,7 +17,7 @@ import org.json4s.JsonAST.JValue
 import org.json4s.jackson.JsonMethods.{compact, parse, render}
 
 import scala.collection.{immutable, mutable}
-import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.duration.{FiniteDuration, SECONDS}
 import scala.util.Try
 
 /** A class responsible for sending messages to the Data Mechanics collector API
@@ -166,6 +166,11 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
       case e: Exception =>
         logWarning(s"Failed to send ack to $url: ${e.getMessage}")
     }
+  }
+
+  def sendMetrics(): Unit = {
+    val metrics = ProcfsMetricsGetter.get().computeAllMetrics()
+    logInfo(metrics.toString)
   }
 
   /** Send a "/bulk" request to Data Mechanics collector API ("the server")
@@ -396,6 +401,11 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
           sendHeartbeat()
         }
         logInfo("Started DelightStreamingConnector heartbeat thread")
+        startRepeatThread(FiniteDuration(1, SECONDS)) {
+          logDebug("Logged metrics")
+          sendMetrics()
+        }
+        logInfo("Started DelightStreamingConnector Metrics thread")
         logInfo(
           s"Application will be available on Delight a few minutes after it completes at this url: $delightURL/apps/$dmAppId"
         )
