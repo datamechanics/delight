@@ -2,8 +2,14 @@ package co.datamechanics.delight
 
 import java.io.IOException
 import java.util.concurrent.atomic.AtomicBoolean
-import co.datamechanics.delight.dto.{Counters, DmAppId, StreamingPayload}
-import co.datamechanics.delight.metrics.{ProcfsMetrics, ProcfsMetricsGetter}
+import co.datamechanics.delight.dto.{
+  Counters,
+  DmAppId,
+  MemoryMetrics,
+  MemoryMetricsPayload,
+  StreamingPayload
+}
+import co.datamechanics.delight.metrics.ProcfsMetricsGetter
 import org.apache.http.HttpResponse
 import org.apache.http.client.HttpClient
 import org.apache.http.client.methods.HttpPost
@@ -17,7 +23,7 @@ import org.json4s.JsonAST.JValue
 import org.json4s.jackson.JsonMethods.{compact, parse, render}
 
 import scala.collection.{immutable, mutable}
-import scala.concurrent.duration.{FiniteDuration, SECONDS}
+import scala.concurrent.duration.{FiniteDuration, MILLISECONDS, SECONDS}
 import scala.util.Try
 
 /** A class responsible for sending messages to the Data Mechanics collector API
@@ -55,9 +61,11 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
     *     sendAck()
     *   - httpClientHeartbeat is only used in a dedicated thread for
     *     sendHeartbeat()
+    *   - httpClientMetrics is only used in a dedicated thread for sendMetrics()
     */
   private val httpClient: HttpClient = new DefaultHttpClient()
   private val httpClientHeartbeat: HttpClient = new DefaultHttpClient()
+  private val httpClientMetrics: HttpClient = new DefaultHttpClient()
 
   private val eventsBuffer: mutable.Buffer[SparkListenerEvent] =
     mutable.Buffer()
@@ -67,6 +75,9 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
   private val pendingEvents: mutable.Queue[SparkListenerEvent] =
     new mutable.Queue[SparkListenerEvent]()
   private var currentPollingInterval = pollingInterval
+
+  private val memoryMetricsQueue: mutable.Queue[MemoryMetrics] =
+    new mutable.Queue[MemoryMetrics]()
 
   /** Has the polling thread started
     */
@@ -168,9 +179,21 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
     }
   }
 
-  def sendMetrics(): Unit = {
-    val metrics = ProcfsMetricsGetter.get().computeAllMetrics()
-    logInfo(metrics.toString)
+  def publishMetrics(payload: MemoryMetricsPayload): Unit = {
+    val url = s"$collectorURL/metrics"
+
+    try {
+      sendRequest(
+        httpClientMetrics,
+        url,
+        payload.toJson,
+        "Successfully sent payload"
+      )
+    } catch {
+      case e: Exception =>
+        logWarning(s"Failed to send metrics to $url: ${e.getMessage}")
+        throw e
+    }
   }
 
   /** Send a "/bulk" request to Data Mechanics collector API ("the server")
@@ -366,6 +389,27 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
       }
     }
 
+  def sendMetrics(): Unit = {
+    try {
+      val memoryMetrics = memoryMetricsQueue
+        .synchronized(memoryMetricsQueue.take(1000))
+        .to[immutable.Seq].map(_.toString)
+      val payloadSize = memoryMetrics.length
+      publishMetrics(
+        MemoryMetricsPayload(
+          dmAppId,
+          memoryMetrics
+        )
+      )
+      memoryMetricsQueue.synchronized {
+        for (_ <- 1 to payloadSize) pendingEvents.dequeue()
+      }
+    } catch {
+      case _: Exception =>
+        Thread.sleep(5000)
+    }
+  }
+
   private def startRepeatThread(
       interval: FiniteDuration
   )(action: => Unit): Thread = {
@@ -401,11 +445,19 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
           sendHeartbeat()
         }
         logInfo("Started DelightStreamingConnector heartbeat thread")
-        startRepeatThread(FiniteDuration(1, SECONDS)) {
-          logDebug("Logged metrics")
+        startRepeatThread(FiniteDuration(100, MILLISECONDS)) {
+          logDebug("Logged metrics Poller")
+          val metrics = ProcfsMetricsGetter.get().computeAllMetrics()
+          memoryMetricsQueue.synchronized {
+            memoryMetricsQueue.enqueue(MemoryMetrics(metrics))
+          }
+        }
+        logInfo("Started DelightStreamingConnector MemoryMetrics Poller thread")
+        startRepeatThread(FiniteDuration(5, SECONDS)) {
+          logDebug("Logged metrics Sender")
           sendMetrics()
         }
-        logInfo("Started DelightStreamingConnector Metrics thread")
+        logInfo("Started DelightStreamingConnector MemoryMetrics Sender thread")
         logInfo(
           s"Application will be available on Delight a few minutes after it completes at this url: $delightURL/apps/$dmAppId"
         )

@@ -1,9 +1,5 @@
 package co.datamechanics.delight.metrics
 
-import org.apache.spark.SparkException
-import org.apache.spark.internal.Logging
-import org.apache.spark.UtilsProxy.utils
-
 import java.io._
 import java.nio.file.{Files, Paths}
 import java.nio.charset.StandardCharsets.UTF_8
@@ -11,6 +7,12 @@ import java.util.Locale
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 import scala.util.Try
+
+import org.apache.spark.SparkException
+import org.apache.spark.internal.Logging
+import org.apache.spark.UtilsProxy.utils
+
+import co.datamechanics.delight.dto.ProcfsMetrics
 
 // This is a port of ProcfsMetricsGetter from org.apache.spark.executor
 // This will allow us to monitor memory on the driver
@@ -164,18 +166,18 @@ class ProcfsMetricsGetter(procfsDir: String = "/proc/") extends Logging {
         val rssMem = procInfoSplit(23).toLong * pageSize
         if (procInfoSplit(1).toLowerCase(Locale.US).contains("java")) {
           allMetrics.copy(
-            jvmVmemTotal = allMetrics.jvmVmemTotal + vmem,
-            jvmRSSTotal = allMetrics.jvmRSSTotal + (rssMem)
+            jvmVmem = allMetrics.jvmVmem + vmem,
+            jvmRSS = allMetrics.jvmRSS + (rssMem)
           )
         } else if (procInfoSplit(1).toLowerCase(Locale.US).contains("python")) {
           allMetrics.copy(
-            pythonVmemTotal = allMetrics.pythonVmemTotal + vmem,
-            pythonRSSTotal = allMetrics.pythonRSSTotal + (rssMem)
+            pythonVmem = allMetrics.pythonVmem + vmem,
+            pythonRSS = allMetrics.pythonRSS + (rssMem)
           )
         } else {
           allMetrics.copy(
-            otherVmemTotal = allMetrics.otherVmemTotal + vmem,
-            otherRSSTotal = allMetrics.otherRSSTotal + (rssMem)
+            otherVmem = allMetrics.otherVmem + vmem,
+            otherRSS = allMetrics.otherRSS + (rssMem)
           )
         }
       }
