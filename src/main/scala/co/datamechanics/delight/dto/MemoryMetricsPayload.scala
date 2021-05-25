@@ -11,7 +11,7 @@ case class MemoryMetricsPayload(
     dmAppId: DmAppId,
     data: String,
     sentAt: Long
-){
+) {
   def toJson: JValue = {
     merge(
       dmAppId.toJson,

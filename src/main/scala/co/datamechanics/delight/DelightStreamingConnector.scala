@@ -187,7 +187,7 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
         httpClientMetrics,
         url,
         payload.toJson,
-        "Successfully sent payload"
+        "Successfully sent metrics payload"
       )
     } catch {
       case e: Exception =>
@@ -393,20 +393,17 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
     try {
       val memoryMetrics = memoryMetricsQueue
         .synchronized(memoryMetricsQueue.take(1000))
-        .to[immutable.Seq].map(_.toString)
+        .to[immutable.Seq]
+        .map(_.toString)
       val payloadSize = memoryMetrics.length
-      publishMetrics(
-        MemoryMetricsPayload(
-          dmAppId,
-          memoryMetrics
-        )
-      )
+      val payload = MemoryMetricsPayload(dmAppId, memoryMetrics)
+      publishMetrics(payload)
       memoryMetricsQueue.synchronized {
-        for (_ <- 1 to payloadSize) pendingEvents.dequeue()
+        for (_ <- 1 to payloadSize) memoryMetricsQueue.dequeue()
       }
     } catch {
-      case _: Exception =>
-        Thread.sleep(5000)
+      case e: Exception =>
+        logWarning("An error occurred while trying to send metrics", e)
     }
   }
 
@@ -453,7 +450,7 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
           }
         }
         logInfo("Started DelightStreamingConnector MemoryMetrics Poller thread")
-        startRepeatThread(FiniteDuration(5, SECONDS)) {
+        startRepeatThread(FiniteDuration(1, SECONDS)) {
           logDebug("Logged metrics Sender")
           sendMetrics()
         }
