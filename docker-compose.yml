@@ -27,7 +27,7 @@ services:
 
     spark-3.1.1-2.12:
         image: datamechanics/spark:jvm-only-3.1.1-latest
-        command: /opt/spark/bin/spark-submit --class org.apache.spark.examples.SparkPi --master 'local[2]' --jars /opt/spark/delight.jar --conf spark.extraListeners=co.datamechanics.delight.DelightListener $EXTRA_OPTS /opt/spark/examples/jars/spark-examples_2.12-3.1.1.jar 100
+        command: /opt/spark/bin/spark-submit --class org.apache.spark.examples.SparkPi --master 'local[2]' --jars /opt/spark/delight.jar --conf spark.extraListeners=co.datamechanics.delight.DelightListener --conf spark.plugins=co.datamechanics.delight.MetricsPlugin $EXTRA_OPTS /opt/spark/examples/jars/spark-examples_2.12-3.1.1.jar 100
         volumes:
             - ./target/scala-2.12/delight_2.12-latest-SNAPSHOT.jar:/opt/spark/delight.jar
         env_file:
