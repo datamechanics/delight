@@ -18,7 +18,7 @@ class DelightListener(sparkConf: SparkConf) extends SparkListener with Logging {
    * For Spark versions below 3.0.0, these configs have no effect.
    */
   sparkConf.set("spark.executor.processTreeMetrics.enabled", "true")
-  sparkConf.set("spark.executor.metrics.pollingInterval", "10ms")
+  sparkConf.set("spark.executor.metrics.pollingInterval", "5s")
 
   private val shouldLogDuration = Configs.logDuration(sparkConf)
 
