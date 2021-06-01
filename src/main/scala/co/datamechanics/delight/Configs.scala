@@ -51,9 +51,12 @@ object Configs {
   }
 
   def generateDMAppId(sparkConf: SparkConf): String = {
-    val appName: String = sparkConf.get("spark.delight.appNameOverride", sparkConf.get("spark.app.name", "undefined"))
-    val sanitizedAppName: String = appName.replaceAll("\\W", "-").replaceAll("--*", "-").stripSuffix("-")
-    val uuid: String = java.util.UUID.randomUUID().toString
+    val appName = sparkConf.getOption("spark.delight.appNameOverride")
+      .orElse(sparkConf.getOption("spark.databricks.clusterUsageTags.clusterName"))
+      .orElse(sparkConf.getOption("spark.app.name"))
+      .getOrElse("undefined")
+    val sanitizedAppName = appName.replaceAll("\\W", "-").replaceAll("--*", "-").stripSuffix("-")
+    val uuid = java.util.UUID.randomUUID().toString
     s"$sanitizedAppName-$uuid"
   }
 
