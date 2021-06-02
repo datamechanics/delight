@@ -441,19 +441,19 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
           logDebug("Logged heartbeat")
           sendHeartbeat()
         }
-        logInfo("Started DelightStreamingConnector heartbeat thread")
-        startRepeatThread(FiniteDuration(100, MILLISECONDS)) {
-          logDebug("Logged metrics Poller")
-          val metrics = ProcfsMetricsGetter.get().computeAllMetrics()
-          memoryMetricsQueue.synchronized {
-            memoryMetricsQueue.enqueue(MemoryMetrics(metrics))
-          }
-        }
-        logInfo("Started DelightStreamingConnector MemoryMetrics Poller thread")
-        startRepeatThread(FiniteDuration(1, SECONDS)) {
-          logDebug("Logged metrics Sender")
-          sendMetrics()
-        }
+//        logInfo("Started DelightStreamingConnector heartbeat thread")
+//        startRepeatThread(FiniteDuration(100, MILLISECONDS)) {
+//          logDebug("Logged metrics Poller")
+//          val metrics = ProcfsMetricsGetter.get().computeAllMetrics()
+//          memoryMetricsQueue.synchronized {
+//            memoryMetricsQueue.enqueue(MemoryMetrics(metrics))
+//          }
+//        }
+//        logInfo("Started DelightStreamingConnector MemoryMetrics Poller thread")
+//        startRepeatThread(FiniteDuration(1, SECONDS)) {
+//          logDebug("Logged metrics Sender")
+//          sendMetrics()
+//        }
         logInfo("Started DelightStreamingConnector MemoryMetrics Sender thread")
         logInfo(
           s"Application will be available on Delight a few minutes after it completes at this url: $delightURL/apps/$dmAppId"

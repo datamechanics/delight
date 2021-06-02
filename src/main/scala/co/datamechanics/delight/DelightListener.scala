@@ -17,6 +17,8 @@ class DelightListener(sparkConf: SparkConf) extends SparkListener with Logging {
   sparkConf.set("spark.executor.processTreeMetrics.enabled", "true")
   sparkConf.set("spark.executor.metrics.pollingInterval", "10ms")
 
+  sparkConf.set("spark.plugins", "co.datamechanics.delight.MetricsPlugin")
+
   private val shouldLogDuration = Configs.logDuration(sparkConf)
 
   private val streamingConnector =

@@ -25,6 +25,9 @@ class ExecMetricPlugin extends ExecutorPlugin with Logging {
         memoryMetricsQueue.enqueue(MemoryMetrics(metrics))
       }
     }
+    startRepeatThread(FiniteDuration(10, SECONDS)) {
+      sendMetrics()
+    }
   }
 
   override def shutdown(): Unit = {}

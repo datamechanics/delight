@@ -3,7 +3,7 @@ crossScalaVersions := Seq("2.12.12")
 
 organization := "co.datamechanics"
 name := "delight"
-version := "latest-SNAPSHOT"
+version := "test-poc-executor-SNAPSHOT"
 
 libraryDependencies += "org.apache.spark" %% "spark-core" % "3.0.0"
 
