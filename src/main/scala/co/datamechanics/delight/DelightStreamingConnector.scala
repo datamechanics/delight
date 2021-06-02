@@ -280,18 +280,19 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
       try {
         val firstEvents = pendingEvents.synchronized(pendingEvents.take(payloadMaxSize)).to[immutable.Seq]
         val serializedEvents = firstEvents.flatMap(serializeEvent)
-        eventsCounter += serializedEvents.length
-        payloadCounter += 1
         publishPayload(
           StreamingPayload(
             dmAppId,
             serializedEvents,
-            Counters(eventsCounter, payloadCounter)
+            Counters(eventsCounter + serializedEvents.length, payloadCounter + 1)
           )
         )
-        pendingEvents.synchronized( // if everything went well, actually remove the payload from the queue
+        pendingEvents.synchronized { // if everything went well, actually remove the payload from the queue
           for(_ <- 1 to firstEvents.length) pendingEvents.dequeue()
-        )
+          eventsCounter += serializedEvents.length
+          payloadCounter += 1
+
+        }
         if(currentPollingInterval > pollingInterval) {
           // if everything went well, polling interval is set back to its initial value
           currentPollingInterval = pollingInterval
