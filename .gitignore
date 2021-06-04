@@ -1,6 +1,7 @@
 *.class
 *.log
-project/
+project/*
+!project/plugins.sbt
 target/
 .idea/
 .DS_Store

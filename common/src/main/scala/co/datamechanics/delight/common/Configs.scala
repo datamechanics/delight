@@ -1,4 +1,4 @@
-package co.datamechanics.delight
+package co.datamechanics.delight.common
 
 import org.apache.spark.SparkConf
 
