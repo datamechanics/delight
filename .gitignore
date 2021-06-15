@@ -2,6 +2,7 @@
 *.log
 project/*
 !project/plugins.sbt
+!project/build.properties
 target/
 .idea/
 .DS_Store
