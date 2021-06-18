@@ -1,11 +1,11 @@
 package co.datamechanics.delight.dto
 
-import java.util.Base64
-
-import co.datamechanics.delight._
+import co.datamechanics.delight.common.Utils.{compressString, currentTime}
 import org.json4s.JsonAST.JValue
 import org.json4s.JsonDSL._
 import org.json4s.Merge._
+
+import java.util.Base64
 
 
 case class StreamingPayload(dmAppId: DmAppId,

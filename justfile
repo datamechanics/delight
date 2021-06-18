@@ -5,6 +5,9 @@ spark_distributions_folder := 'spark_distributions'
 build:
     sbt +package
 
+clean:
+    sbt clean
+
 publish:
     sbt +publishSigned
 
@@ -36,10 +39,18 @@ download_3_1_1: (download_spark_distribution 'https://archive.apache.org/dist/sp
 download_all_spark_distributions: download_2_3_2 download_2_4_0 download_2_4_7 download_2_4_7_2_12 download_3_0_1 download_3_1_1
 
 run_test_app spark_distribution_folder spark_version scala_version:
+    #!/bin/bash
+
+    if [ "$(git branch --show-current)" = "main" ]; then
+        VERSION="latest"
+    else
+        VERSION=$(git branch --show-current)
+    fi
+
     {{spark_distribution_folder}}/bin/spark-submit \
     --class org.apache.spark.examples.SparkPi \
-    --master 'local[2]' \
-    --packages co.datamechanics:delight_{{scala_version}}:latest-SNAPSHOT \
+    --master 'local[*]' \
+    --packages co.datamechanics:delight_{{scala_version}}:${VERSION}-SNAPSHOT \
     --repositories https://oss.sonatype.org/content/repositories/snapshots \
     --conf spark.delight.accessToken.secret={{api_key}} \
     --conf spark.delight.collector.url={{collector_url}} \
@@ -48,10 +59,18 @@ run_test_app spark_distribution_folder spark_version scala_version:
     100
 
 run_test_app_local_jar spark_distribution_folder spark_version scala_version:
+    #!/bin/bash
+
+    if [ "$(git branch --show-current)" = "main" ]; then
+        VERSION="latest"
+    else
+        VERSION=$(git branch --show-current)
+    fi
+
     {{spark_distribution_folder}}/bin/spark-submit \
     --class org.apache.spark.examples.SparkPi \
-    --master 'local[2]' \
-    --jars target/scala-{{scala_version}}/delight_{{scala_version}}-latest-SNAPSHOT.jar \
+    --master 'local[*]' \
+    --jars agent/target/scala-{{scala_version}}/delight_{{scala_version}}-${VERSION}-SNAPSHOT.jar \
     --conf spark.delight.accessToken.secret={{api_key}} \
     --conf spark.delight.collector.url={{collector_url}} \
     --conf spark.delight.logDuration=true \

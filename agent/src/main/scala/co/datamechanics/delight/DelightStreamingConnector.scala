@@ -1,24 +1,18 @@
 package co.datamechanics.delight
 
-import java.io.IOException
-import java.util.concurrent.atomic.AtomicBoolean
-
+import co.datamechanics.delight.common.Configs
+import co.datamechanics.delight.common.Network.sendRequest
+import co.datamechanics.delight.common.Utils.{currentTime, startRepeatThread, time}
 import co.datamechanics.delight.dto.{Counters, DmAppId, StreamingPayload}
-import org.apache.http.HttpResponse
 import org.apache.http.client.HttpClient
-import org.apache.http.client.methods.HttpPost
-import org.apache.http.entity.StringEntity
 import org.apache.http.impl.client.DefaultHttpClient
-import org.apache.http.util.EntityUtils
-import org.apache.spark.{JsonProtocolProxy, SparkConf}
 import org.apache.spark.internal.Logging
 import org.apache.spark.scheduler.SparkListenerEvent
-import org.json4s.JsonAST.JValue
-import org.json4s.jackson.JsonMethods.{compact, parse, render}
+import org.apache.spark.{JsonProtocolProxy, SparkConf}
+import org.json4s.jackson.JsonMethods.{compact, render}
 
+import java.util.concurrent.atomic.AtomicBoolean
 import scala.collection.{immutable, mutable}
-import scala.concurrent.duration.FiniteDuration
-import scala.util.Try
 
 /**
   * A class responsible for sending messages to the Data Mechanics collector API
@@ -67,61 +61,6 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
     */
   private val started: AtomicBoolean = new AtomicBoolean(false)
 
-  private val isRateLimited: AtomicBoolean = new AtomicBoolean(false)
-
-
-  /**
-    * Parse an optional return message from the API
-    */
-  private def parseApiReturnMessage(httpResponse: HttpResponse): Option[String] = {
-    Try {
-      val entity = httpResponse.getEntity
-      val body = EntityUtils.toString(entity)
-      (parse(body) \\ "message").extract[Option[String]]
-    }.toOption.flatten
-  }
-
-  /**
-    * Send a POST request to Data Mechanics collector API ("the server")
-    *
-    * - Handles access token
-    * - Status Code:
-    *   -> 200: Request is a success
-    *   -> 429: RateLimit has been reached for this app
-    *   -> Other: Throw IOException
-    *
-    */
-  private def sendRequest(client: HttpClient, url: String, payload: JValue, successMsg: String): Unit = {
-    if (isRateLimited.get) return
-
-    val payloadAsString = compact(render(payload))
-    val requestEntity = new StringEntity(payloadAsString)
-
-    val postMethod = new HttpPost(url)
-    postMethod.setHeader("X-API-key", accessTokenOption.get)
-    postMethod.setEntity(requestEntity)
-
-    val httpResponse: HttpResponse = client.execute(postMethod)
-
-    val apiReturnMessage: Option[String] = parseApiReturnMessage(httpResponse)
-    val statusCode = httpResponse.getStatusLine.getStatusCode
-
-    val entity = httpResponse.getEntity
-    EntityUtils.consume(entity)
-
-    statusCode match {
-      case 200 => logInfo(successMsg)
-      case 429 =>
-        isRateLimited.set(true)
-        logError(s"RateLimit has been reached, collection will now stop")
-      case _ =>
-        var errorMessage = s"Status $statusCode: ${httpResponse.getStatusLine.getReasonPhrase}."
-        apiReturnMessage.foreach(
-          m => errorMessage += s" $m."
-        )
-        throw new IOException(errorMessage)
-    }
-  }
 
   /**
     * Send a "/heartbeat" request to Data Mechanics collector API ("the server")
@@ -133,7 +72,7 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
   def sendHeartbeat(): Unit = time(shouldLogDuration, "sendHeartbeat") {
     val url = s"$collectorURL/heartbeat"
     try {
-      sendRequest(httpClientHeartbeat, url, dmAppId.toJson, "Successfully sent heartbeat")
+      sendRequest(httpClientHeartbeat, url, accessTokenOption.get, dmAppId.toJson, "Successfully sent heartbeat")
     } catch {
       case e: Exception =>
         logWarning(s"Failed to send heartbeat to $url: ${e.getMessage}")
@@ -150,7 +89,7 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
     val url = s"$collectorURL/ack"
 
     try {
-      sendRequest(httpClient, url, dmAppId.toJson, "Successfully sent ack")
+      sendRequest(httpClient, url, accessTokenOption.get, dmAppId.toJson, "Successfully sent ack")
     } catch {
       case e: Exception =>
         logWarning(s"Failed to send ack to $url: ${e.getMessage}")
@@ -168,7 +107,7 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
     val url = s"$collectorURL/bulk"
 
     try {
-      sendRequest(httpClient, url, payload.toJson, "Successfully sent payload")
+      sendRequest(httpClient, url, accessTokenOption.get, payload.toJson, "Successfully sent payload")
     } catch {
       case e: Exception =>
         logWarning(s"Failed to send payload to $url: ${e.getMessage}")
@@ -308,20 +247,6 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
     }
   }
 
-  private def startRepeatThread(interval: FiniteDuration)(action: => Unit): Thread = {
-    val thread = new Thread {
-      override def run() {
-        while (true) {
-          val start = currentTime
-          val _ = action
-          val end = currentTime
-          Thread.sleep(math.max(interval.toMillis - (end - start), 0))
-        }
-      }
-    }
-    thread.start()
-    thread
-  }
 
   /**
     * Start the polling thread that sends all pending payloads to the server every `currentPollingInterval` seconds.

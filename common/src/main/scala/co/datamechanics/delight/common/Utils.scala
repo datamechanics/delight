@@ -1,11 +1,12 @@
-package co.datamechanics
-
-import java.io.ByteArrayOutputStream
-import java.util.zip.GZIPOutputStream
+package co.datamechanics.delight.common
 
 import org.apache.spark.internal.Logging
 
-package object delight extends Logging {
+import java.io.ByteArrayOutputStream
+import java.util.zip.GZIPOutputStream
+import scala.concurrent.duration.FiniteDuration
+
+object Utils extends Logging {
 
   def currentTime: Long = System.currentTimeMillis()
 
@@ -34,5 +35,20 @@ package object delight extends Logging {
       logInfo("Elapsed time in \"" + blockName + "\": " + durationString)
     }
     result
+  }
+
+  def startRepeatThread(interval: FiniteDuration)(action: => Unit): Thread = {
+    val thread = new Thread {
+      override def run() {
+        while (true) {
+          val start = currentTime
+          val _ = action
+          val end = currentTime
+          Thread.sleep(math.max(interval.toMillis - (end - start), 0))
+        }
+      }
+    }
+    thread.start()
+    thread
   }
 }
