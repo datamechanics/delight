@@ -78,6 +78,26 @@ run_test_app_local_jar spark_distribution_folder spark_version scala_version:
     {{spark_distribution_folder}}/examples/jars/spark-examples_{{scala_version}}-{{spark_version}}.jar \
     100
 
+run_test_app_docker image spark_version scala_version:
+    #!/bin/bash
+
+    if [ "$(git branch --show-current)" = "main" ]; then
+        VERSION="latest"
+    else
+        VERSION=$(git branch --show-current)
+    fi
+
+    docker run --rm \
+    -v $(pwd)/agent/target/scala-{{scala_version}}/delight_{{scala_version}}-${VERSION}-SNAPSHOT.jar:/opt/spark/delight.jar \
+    {{image}} \
+    /opt/spark/bin/spark-submit --class org.apache.spark.examples.SparkPi --master 'local[*]' \
+    --jars /opt/spark/delight.jar --conf spark.extraListeners=co.datamechanics.delight.DelightListener \
+    $EXTRA_OPTS \
+    /opt/spark/examples/jars/spark-examples_{{scala_version}}-{{spark_version}}.jar \
+    100
+
+
+
 run_2_3_2: (run_test_app 'spark_distributions/spark-2.3.2-bin-hadoop2.7' '2.3.2' '2.11')
 run_2_4_0: (run_test_app 'spark_distributions/spark-2.4.0-bin-hadoop2.7' '2.4.0' '2.11')
 run_2_4_7: (run_test_app 'spark_distributions/spark-2.4.7-bin-hadoop2.7' '2.4.7' '2.11')
@@ -91,3 +111,7 @@ run_local_jar_2_4_7: (run_test_app_local_jar 'spark_distributions/spark-2.4.7-bi
 run_local_jar_2_4_7_2_12: (run_test_app_local_jar 'spark_distributions/spark-2.4.7-bin-without-hadoop-scala-2.12' '2.4.7' '2.12')
 run_local_jar_3_0_1: (run_test_app_local_jar 'spark_distributions/spark-3.0.1-bin-hadoop3.2' '3.0.1' '2.12')
 run_local_jar_3_1_1: (run_test_app_local_jar 'spark_distributions/spark-3.1.1-bin-hadoop3.2' '3.1.1' '2.12')
+
+run_docker_3_1_1: (run_test_app_docker 'datamechanics/spark:jvm-only-3.1.1-dm12' '3.1.1' '2.12')
+run_docker_3_0_1: (run_test_app_docker 'datamechanics/spark:jvm-only-3.0.1-dm12' '3.0.1' '2.12')
+run_docker_2_4_7: (run_test_app_docker 'datamechanics/spark:jvm-only-2.4.7-hadoop-3.1.0-java-8-scala-2.11-dm12' '2.4.7' '2.11')

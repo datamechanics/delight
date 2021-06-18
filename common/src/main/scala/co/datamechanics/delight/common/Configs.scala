@@ -6,6 +6,21 @@ import scala.concurrent.duration._
 
 object Configs {
 
+  def isEdge(sparkConf: SparkConf): Boolean = {
+    sparkConf.getBoolean("spark.delight.edge", false)
+  }
+
+  def getDMAppId(sparkConf: SparkConf): String = {
+    val configName = "spark.delight.dmAppId"
+    sparkConf
+      .getOption(configName)
+      .getOrElse {
+        val generatedDMAppId = generateDMAppId(sparkConf)
+        sparkConf.set(configName, generatedDMAppId)
+        generatedDMAppId
+      }
+  }
+
   def delightUrl(sparkConf: SparkConf): String = {
     sparkConf.get("spark.delight.url", "https://delight.datamechanics.co/")
   }
@@ -50,7 +65,7 @@ object Configs {
     sparkConf.getBoolean("spark.delight.logDuration", false)
   }
 
-  def generateDMAppId(sparkConf: SparkConf): String = {
+  private def generateDMAppId(sparkConf: SparkConf): String = {
     val appName = sparkConf.getOption("spark.delight.appNameOverride")
       .orElse(sparkConf.getOption("spark.databricks.clusterUsageTags.clusterName"))
       .orElse(sparkConf.getOption("spark.app.name"))

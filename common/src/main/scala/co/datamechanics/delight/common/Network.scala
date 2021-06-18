@@ -18,11 +18,11 @@ object Network extends Logging {
   implicit val formats: DefaultFormats.type = org.json4s.DefaultFormats
   private val isRateLimited: AtomicBoolean = new AtomicBoolean(false)
 
-
-  /**
-    * Parse an optional return message from the API
+  /** Parse an optional return message from the API
     */
-  private def parseApiReturnMessage(httpResponse: HttpResponse): Option[String] = {
+  private def parseApiReturnMessage(
+      httpResponse: HttpResponse
+  ): Option[String] = {
     Try {
       val entity = httpResponse.getEntity
       val body = EntityUtils.toString(entity)
@@ -30,8 +30,7 @@ object Network extends Logging {
     }.toOption.flatten
   }
 
-  /**
-    * Send a POST request to Data Mechanics collector API ("the server")
+  /** Send a POST request to Data Mechanics collector API ("the server")
     *
     * - Handles access token
     * - Status Code:
