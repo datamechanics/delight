@@ -25,9 +25,9 @@ object Utils extends Logging {
     val t0 = System.nanoTime()
     val result = block
     val t1 = System.nanoTime()
-    if(shouldLogDuration) {
+    if (shouldLogDuration) {
       val nanoDuration = t1 - t0
-      val durationString = if(nanoDuration >= 1e7) {
+      val durationString = if (nanoDuration >= 1e7) {
         ((t1 - t0) / 1000000) + " ms"
       } else {
         ((t1 - t0) / 1000) + " µs"

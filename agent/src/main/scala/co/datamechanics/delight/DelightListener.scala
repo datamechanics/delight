@@ -1,6 +1,7 @@
 package co.datamechanics.delight
 import co.datamechanics.delight.common.Configs
 import co.datamechanics.delight.common.Utils.time
+import co.datamechanics.delight.common.metrics.MetricsCollector
 
 import java.util.concurrent.atomic.AtomicBoolean
 import org.apache.spark.internal.Logging
@@ -25,6 +26,12 @@ class DelightListener(sparkConf: SparkConf) extends SparkListener with Logging {
   private val shouldLogDuration = Configs.logDuration(sparkConf)
 
   private val streamingConnector = DelightStreamingConnector.getOrCreate(sparkConf)
+
+  private val metricsCollector = MetricsCollector.getOrCreate("driver", sparkConf)
+
+  if (Configs.isEdge(sparkConf)) {
+    metricsCollector.startIfNecessary()
+  }
 
   /**
   * Conveys whether the logStart event has been sent
@@ -110,6 +117,7 @@ class DelightListener(sparkConf: SparkConf) extends SparkListener with Logging {
     // Upon ApplicationEnd, this thread waits for all pending messages to be sent to the server (`blocking`).
     // Otherwise Spark would exit before all pending messages are sent to the server.
     logEvent(event, flush = true, blocking = true)
+    metricsCollector.stop()
   }
   override def onExecutorAdded(event: SparkListenerExecutorAdded): Unit = {
     logEvent(event, flush = true)

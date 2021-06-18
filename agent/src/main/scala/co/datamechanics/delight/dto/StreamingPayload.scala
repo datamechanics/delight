@@ -1,6 +1,7 @@
 package co.datamechanics.delight.dto
 
 import co.datamechanics.delight.common.Utils.{compressString, currentTime}
+import co.datamechanics.delight.common.dto.DmAppId
 import org.json4s.JsonAST.JValue
 import org.json4s.JsonDSL._
 import org.json4s.Merge._

@@ -3,7 +3,8 @@ package co.datamechanics.delight
 import co.datamechanics.delight.common.Configs
 import co.datamechanics.delight.common.Network.sendRequest
 import co.datamechanics.delight.common.Utils.{currentTime, startRepeatThread, time}
-import co.datamechanics.delight.dto.{Counters, DmAppId, StreamingPayload}
+import co.datamechanics.delight.common.dto.DmAppId
+import co.datamechanics.delight.dto.{Counters, StreamingPayload}
 import org.apache.http.client.HttpClient
 import org.apache.http.impl.client.DefaultHttpClient
 import org.apache.spark.internal.Logging
@@ -22,7 +23,7 @@ import scala.collection.{immutable, mutable}
   */
 class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
 
-  private val dmAppId = DmAppId(Configs.generateDMAppId(sparkConf))
+  private val dmAppId = DmAppId(Configs.getDMAppId(sparkConf))
   private val delightURL = Configs.delightUrl(sparkConf).stripSuffix("/")
   private val collectorURL = Configs.collectorUrl(sparkConf).stripSuffix("/")
   private val bufferMaxSize = Configs.bufferMaxSize(sparkConf)
@@ -282,7 +283,7 @@ object DelightStreamingConnector {
     */
   def getOrCreate(sparkConf: SparkConf): DelightStreamingConnector = {
     if(sharedConnector.isEmpty) {
-      sharedConnector = Option(new DelightStreamingConnector(sparkConf))
+      sharedConnector = Some(new DelightStreamingConnector(sparkConf))
     }
     sharedConnector.get
   }
