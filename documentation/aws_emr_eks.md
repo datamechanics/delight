@@ -9,7 +9,7 @@ It assumes that you have created an account and generated an access token on the
 
 EMR on EKS currently only supports cluster/job creation through use of the aws emr-containers cli.
 
-Before submitting a spark application, ensure that you have completed the following steps to initialize your cluster/environment: 
+To submit a spark application, complete the following steps to initialize your cluster/environment: 
 
 - Provision a Kubernetes cluster
 - Create a Kubernetes namespace specifically for emr deployments
