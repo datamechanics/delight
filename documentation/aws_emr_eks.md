@@ -40,7 +40,8 @@ Before submitting a spark application, ensure that you have completed the follow
 	>		}’
 	```
 	You should be able to view your virtual cluster in the emr console under virtual clusters	
-<![EMR Virtual Cluster Dashboard](images/emr_virtual_cluster.png)
+    
+    >![EMR Virtual Cluster Dashboard](images/emr_virtual_cluster.png)
 	  
 - Submit spark job to your virtual cluster(Including your Delight API Key), making sure to include the following spark configuration settings specific to Delight to the -job-driver argument of the api call
 	>```java
