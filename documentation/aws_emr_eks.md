@@ -24,7 +24,7 @@ To submit a spark application, complete the following steps to initialize your c
 	> ```
 	>aws emr-containers update-role-trust-policy --cluster-name <cluster name> --namespace <namespace> --role-name <job execution role name>
 	> ```
-- Create an EMR virtual cluster 
+- Create an EMR virtual cluster; visit the EMR dashboard to view the virtual cluster  
 	> ```
 	> aws emr-containers create-virtual-cluster \  
 	> 	--name <cluster name> \  
