@@ -29,15 +29,15 @@ To submit a spark application, complete the following steps to initialize your c
 	> aws emr-containers create-virtual-cluster \  
 	> 	--name <cluster name> \  
 	> 	--container-provider \ 
-> 		`{  
-> 			“id”: <virtual cluster name>,  
-> 			“type”: “EKS”,
-> 			“info”: {  
-> 				“eksInfo”: {  
->					“namespace”: <your namespace> 
-> 				}  
->			 }  
->		}’
+	> 	`{  
+	> 		“id”: <virtual cluster name>,  
+	> 		“type”: “EKS”,
+	> 		“info”: {  
+	> 			“eksInfo”: {  
+	>				“namespace”: <your namespace> 
+	> 			}  
+	>			}  
+	>	}’
 	>```
 
     >![You should be able to view your virtual cluster in the emr console under virtual clusters](images/emr_virtual_cluster.png)
