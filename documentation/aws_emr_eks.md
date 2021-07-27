@@ -1,3 +1,4 @@
+
 # Installation steps for AWS EMR on EKS
 
 This document details instructions to install Delight on AWS EMR on EKS.
@@ -14,11 +15,10 @@ Before submitting a spark application, ensure that you have completed the follow
 - Create a Kubernetes namespace specifically for emr deployments
 - Create RBAC role for service emr-containers
 	>```
-    eksctl create iamidentitymapping \
-    --cluster <your cluster name>  \
-    --namespace <your namespace> \
-    --service-name "emr-containers”
-    ```
+		>eksctl create iamidentitymapping \
+		>   --cluster <your cluster name>  \
+		>   --namespace <your namespace> \
+		>   --service-name "emr-containers” ```
 - Create job execution role and attache to cluster
 	> ```
 	>aws emr-containers update-role-trust-policy --cluster-name <cluster name> --namespace <namespace> --role-name <job execution role name>
@@ -38,9 +38,8 @@ Before submitting a spark application, ensure that you have completed the follow
 	>			 }  
 	>		}’
 	```
-
-    You should be able to view your virtual cluster in the emr console under virtual clusters
-	>![EMR Virtual Cluster Dashboard](images/emr_virtual_cluster.png)
+	You should be able to view your virtual cluster in the emr console under virtual clusters	
+<![EMR Virtual Cluster Dashboard](images/emr_virtual_cluster.png)
 	  
 - Submit spark job to your virtual cluster(Including your Delight API Key), making sure to include the following spark configuration settings specific to Delight to the -job-driver argument of the api call
 	>```java
