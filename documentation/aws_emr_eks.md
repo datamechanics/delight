@@ -70,6 +70,7 @@ Before submitting a spark application, ensure that you have completed the follow
 - Go to the Jobs UI on your virtual cluster to view the status of your spark application, view logs, and access the spark UI
     >![EMR Virtual Cluster Dashboard](images/emr_eks_jobs_dashboard.png)
 
-
+- Visit the Delight Dashboard and view your application metrics
+    >![Delight Dashboard](images/delight_dashboard.png)
 Don't forget to replace the placeholders in the code!
 Latest Spark distributions on EMR use Scala version 2.12.
