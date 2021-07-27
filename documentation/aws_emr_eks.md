@@ -15,10 +15,11 @@ Before submitting a spark application, ensure that you have completed the follow
 - Create a Kubernetes namespace specifically for emr deployments
 - Create RBAC role for service emr-containers
 	>```
-		>eksctl create iamidentitymapping \
-		>   --cluster <your cluster name>  \
-		>   --namespace <your namespace> \
-		>   --service-name "emr-containers” ```
+	> eksctl create iamidentitymapping \
+	> --cluster <your cluster name>  \
+	>--namespace <your namespace> \
+	>--service-name "emr-containers”
+	>```
 - Create job execution role and attache to cluster
 	> ```
 	>aws emr-containers update-role-trust-policy --cluster-name <cluster name> --namespace <namespace> --role-name <job execution role name>
