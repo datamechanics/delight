@@ -72,5 +72,7 @@ To submit a spark application, complete the following steps to initialize your c
 
 - Visit the Delight Dashboard and view your application metrics
     >![Delight Dashboard](images/delight_dashboard.png)
+
+
 Don't forget to replace the placeholders in the code!
 Latest Spark distributions on EMR use Scala version 2.12.
