@@ -55,7 +55,7 @@ To submit a spark application, complete the following steps to initialize your c
 	>aws emr-containers start-job-run \
 	> --virtual-cluster-id \<cluster id returned by create virtual cluster execution> \
 	>--name <name of spark job> \
-	>--execution-role-arn arn:aws:iam::562450188999:role/EMRContainers-ExecutionRole \
+	>--execution-role-arn <arn for job execution role> \
 	>--release-label emr-6.2.0-latest \
 	>--job-driver '{"sparkSubmitJobDriver": {"entryPoint": "local:///usr/lib/spark/examples/src/main/python/pi.py","sparkSubmitParameters": "--packages co.datamechanics:delight_2.12:latest-SNAPSHOT  
 	>--repositories https://oss.sonatype.org/content/repositories/snapshots \
