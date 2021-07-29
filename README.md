@@ -58,6 +58,7 @@ Here are the available instructions:
 - [Local run with the `spark-submit` CLI](documentation/local_run.md)
 - [Generic instructions for the `spark-submit` CLI](documentation/spark_submit.md)
 - [AWS EMR](documentation/aws_emr.md)
+- [AWS EMR on EKS](documentation/aws_emr_eks.md)
 - [Google Cloud Dataproc](documentation/dataproc.md)
 - [Spark on Kubernetes operator](documentation/spark_operator.md)
 - [Databricks](documentation/databricks.md)
