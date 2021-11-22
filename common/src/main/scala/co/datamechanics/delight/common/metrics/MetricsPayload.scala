@@ -2,9 +2,8 @@ package co.datamechanics.delight.common.metrics
 
 import co.datamechanics.delight.common.Utils.{compressString, currentTime}
 import co.datamechanics.delight.common.dto.DmAppId
-import org.json4s.JsonAST.JValue
-import org.json4s.JsonDSL._
 import org.json4s.Merge.merge
+import org.json4s.{JField, JLong, JObject, JString}
 
 import java.util.Base64
 
@@ -13,13 +12,17 @@ case class MetricsPayload(
     data: String,
     sentAt: Long
 ) {
-  def toJson: JValue = {
+  def toJson: JObject =
     merge(
       dmAppId.toJson,
-      ("sentAt" -> sentAt)
-        ~ ("data" -> Base64.getEncoder.encodeToString(compressString(data)))
+      JObject(
+        JField("sentAt", JLong(sentAt)),
+        JField(
+          "data",
+          JString(Base64.getEncoder.encodeToString(compressString(data)))
+        )
+      )
     )
-  }
 }
 
 object MetricsPayload {

@@ -26,7 +26,10 @@ object Configs {
   }
 
   def collectorUrl(sparkConf: SparkConf): String = {
-    sparkConf.get("spark.delight.collector.url", "https://api.delight.datamechanics.co/collector/")
+    sparkConf.get(
+      "spark.delight.collector.url",
+      "https://api.delight.datamechanics.co/collector/"
+    )
   }
 
   def bufferMaxSize(sparkConf: SparkConf): Int = {
@@ -38,7 +41,9 @@ object Configs {
   }
 
   def accessTokenOption(sparkConf: SparkConf): Option[String] = {
-    sparkConf.getOption("spark.delight.accessToken.secret") // secret is added here so that Spark redacts this config
+    sparkConf.getOption(
+      "spark.delight.accessToken.secret"
+    ) // secret is added here so that Spark redacts this config
   }
 
   def heartbeatInterval(sparkConf: SparkConf): FiniteDuration = {
@@ -57,8 +62,12 @@ object Configs {
     sparkConf.getDouble("spark.delight.maxWaitOnEndSecs", 10).seconds
   }
 
-  def waitForPendingPayloadsSleepInterval(sparkConf: SparkConf): FiniteDuration = {
-    sparkConf.getDouble("spark.delight.waitForPendingPayloadsSleepIntervalSecs", 1).seconds
+  def waitForPendingPayloadsSleepInterval(
+      sparkConf: SparkConf
+  ): FiniteDuration = {
+    sparkConf
+      .getDouble("spark.delight.waitForPendingPayloadsSleepIntervalSecs", 1)
+      .seconds
   }
 
   def logDuration(sparkConf: SparkConf): Boolean = {
@@ -66,11 +75,15 @@ object Configs {
   }
 
   private def generateDMAppId(sparkConf: SparkConf): String = {
-    val appName = sparkConf.getOption("spark.delight.appNameOverride")
-      .orElse(sparkConf.getOption("spark.databricks.clusterUsageTags.clusterName"))
+    val appName = sparkConf
+      .getOption("spark.delight.appNameOverride")
+      .orElse(
+        sparkConf.getOption("spark.databricks.clusterUsageTags.clusterName")
+      )
       .orElse(sparkConf.getOption("spark.app.name"))
       .getOrElse("undefined")
-    val sanitizedAppName = appName.replaceAll("\\W", "-").replaceAll("--*", "-").stripSuffix("-")
+    val sanitizedAppName =
+      appName.replaceAll("\\W", "-").replaceAll("--*", "-").stripSuffix("-")
     val uuid = java.util.UUID.randomUUID().toString
     s"$sanitizedAppName-$uuid"
   }

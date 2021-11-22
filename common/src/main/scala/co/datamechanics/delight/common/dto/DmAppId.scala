@@ -1,12 +1,9 @@
 package co.datamechanics.delight.common.dto
 
-import org.json4s.JsonAST.JValue
-import org.json4s.JsonDSL._
+import org.json4s.{JField, JObject, JString}
 
 case class DmAppId(dmAppId: String) {
-  def toJson: JValue = {
-    "dmAppId" -> dmAppId
-  }
+  def toJson: JObject = JObject(JField("dmAppId", JString(dmAppId)))
 
   override def toString: String = dmAppId
 }

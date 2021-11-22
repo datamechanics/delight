@@ -1,7 +1,7 @@
 package co.datamechanics.delight.common.metrics
 
-import org.json4s.JsonAST.JValue
+import org.json4s.JObject
 
 trait Metrics {
-  def toJson: JValue
+  def toJson: JObject
 }

@@ -1,3 +1,5 @@
+set dotenv-load := true
+
 collector_url := 'https://api.delight.datamechanics.co/collector/'
 api_key := ''
 spark_distributions_folder := 'spark_distributions'
@@ -112,6 +114,7 @@ run_local_jar_2_4_7_2_12: (run_test_app_local_jar 'spark_distributions/spark-2.4
 run_local_jar_3_0_1: (run_test_app_local_jar 'spark_distributions/spark-3.0.1-bin-hadoop3.2' '3.0.1' '2.12')
 run_local_jar_3_1_1: (run_test_app_local_jar 'spark_distributions/spark-3.1.1-bin-hadoop3.2' '3.1.1' '2.12')
 
+run_docker_3_2_0: (run_test_app_docker 'datamechanics/spark:jvm-only-3.2.0-dm15' '3.2.0' '2.12')
 run_docker_3_1_1: (run_test_app_docker 'datamechanics/spark:jvm-only-3.1.1-dm12' '3.1.1' '2.12')
 run_docker_3_0_1: (run_test_app_docker 'datamechanics/spark:jvm-only-3.0.1-dm12' '3.0.1' '2.12')
 run_docker_2_4_7: (run_test_app_docker 'datamechanics/spark:jvm-only-2.4.7-hadoop-3.1.0-java-8-scala-2.11-dm12' '2.4.7' '2.11')
