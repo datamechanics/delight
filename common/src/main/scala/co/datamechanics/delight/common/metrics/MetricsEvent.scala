@@ -1,9 +1,8 @@
 package co.datamechanics.delight.common.metrics
 
 import co.datamechanics.delight.common.Utils.currentTime
-import org.json4s.JsonAST.JValue
-import org.json4s.JsonDSL._
 import org.json4s.jackson.JsonMethods.compact
+import org.json4s.{JField, JLong, JObject, JString}
 
 case class MetricsEvent(
     host: String,
@@ -11,12 +10,12 @@ case class MetricsEvent(
     metrics: Metrics,
     timestamp: Long
 ) {
-  def toJson: JValue = {
-    (("host" -> host)
-      ~ ("kind" -> kind)
-      ~ ("timestamp" -> timestamp)
-      ~ ("metrics" -> metrics.toJson))
-  }
+  def toJson: JObject = JObject(
+    JField("host", JString(host)),
+    JField("kind", JString(kind)),
+    JField("timestamp", JLong(timestamp)),
+    JField("metrics", metrics.toJson)
+  )
 
   override def toString: String = compact(this.toJson)
 }

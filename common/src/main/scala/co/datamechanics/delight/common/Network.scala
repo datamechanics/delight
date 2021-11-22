@@ -6,9 +6,8 @@ import org.apache.http.client.methods.HttpPost
 import org.apache.http.entity.StringEntity
 import org.apache.http.util.EntityUtils
 import org.apache.spark.internal.Logging
-import org.json4s.DefaultFormats
-import org.json4s.JsonAST.JValue
 import org.json4s.jackson.JsonMethods.{compact, parse, render}
+import org.json4s.{DefaultFormats, JObject}
 
 import java.io.IOException
 import java.util.concurrent.atomic.AtomicBoolean
@@ -37,9 +36,14 @@ object Network extends Logging {
     *   -> 200: Request is a success
     *   -> 429: RateLimit has been reached for this app
     *   -> Other: Throw IOException
-    *
     */
-  def sendRequest(client: HttpClient, url: String, accessToken: String, payload: JValue, successMsg: String): Unit = {
+  def sendRequest(
+      client: HttpClient,
+      url: String,
+      accessToken: String,
+      payload: JObject,
+      successMsg: String
+  ): Unit = {
     if (isRateLimited.get) return
 
     val payloadAsString = compact(render(payload))
@@ -63,10 +67,9 @@ object Network extends Logging {
         isRateLimited.set(true)
         logError(s"RateLimit has been reached, collection will now stop")
       case _ =>
-        var errorMessage = s"Status $statusCode: ${httpResponse.getStatusLine.getReasonPhrase}."
-        apiReturnMessage.foreach(
-          m => errorMessage += s" $m."
-        )
+        var errorMessage =
+          s"Status $statusCode: ${httpResponse.getStatusLine.getReasonPhrase}."
+        apiReturnMessage.foreach(m => errorMessage += s" $m.")
         throw new IOException(errorMessage)
     }
   }
