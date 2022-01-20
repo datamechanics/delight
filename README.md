@@ -149,7 +149,7 @@ If you sign up using the same Google organization as your colleague, you will au
 
 The Delight UI is accessible for 30 days after the app completion. After this time, the logs are deleted. 
 
-There's also a limit of 1,000 apps per customer. If you reach this limit, we will start cleaning up the logs of your oldest apps.
+There's also a limit of 10,000 apps per customer. If you reach this limit, we will start cleaning up the logs of your oldest apps.
 
 ### NoSuchMethodError
 
@@ -166,3 +166,13 @@ Exception in thread "main" java.lang.NoSuchMethodError: org.apache.spark.interna
 This probably means that the Scala version of Delight does not match the Scala version of the Spark distribution.
 
 If you specified `co.datamechanics:delight_2.11:latest-SNAPSHOT`, please change to `co.datamechanics:delight_2.12:latest-SNAPSHOT`. And vice versa!
+
+### I'd like to troubleshoot Delight, how can I see its logs?
+
+The Delight jar attached to your Spark driver produces troubleshooting logs within the Spark Driver logs.
+Look for the class name DelightStreamingConnector. There should be INFO logs printed when your application starts. 
+
+If you don't see these logs, you may need to modify the log4j configuration file used by Spark to add this line:
+```
+log4j.logger.co.datamechanics.delight=INFO
+```
