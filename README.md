@@ -2,7 +2,7 @@
 
 [Delight](https://www.datamechanics.co/delight) is a free Spark UI & Spark History Server alternative with new metrics and visualizations that will delight you! 
 
-The Delight project is developed by [Data Mechanics](https://www.datamechanics.co), a Cloud-Native Spark Platform for data engineers. But Delight works on top of any Spark platform, whether it's open-source or commercial, in the cloud or on-premise.
+The Delight project is developed by [Data Mechanics](https://www.datamechanics.co), which is now part of the [Spot](https://spot.io) family. Delight works on top of any Spark platform, whether it's open-source or commercial, in the cloud or on-premise.
 
 ## Overview
 
@@ -33,7 +33,8 @@ Delight also runs a Spark History Server for you, so it's a great way to access 
 - November 2020: [First release](https://www.datamechanics.co/blog-post/were-releasing-a-free-cross-platform-spark-ui-and-spark-history-server). A dashboard with one-click access to a Hosted Spark History Server (Spark UI).
 - March 2021: Beta release of the overview screen with Executor CPU metrics and Spark timeline.
 - April 2021: [Delight is Generally Available](https://www.datamechanics.co/blog-post/delight-the-new-improved-spark-ui-spark-history-server-is-now-ga)! The overview screen now displays the executors peak memory usage, broken down by the type of memory usage (Java, Python, other processes).
-- Coming Next: Executor Page with memory usage over time, Driver memory usage, Automated tuning recommendations, Make Delight accessible while the app is running.
+- June 2022: The list of executors and the memory over time of each executor is available. Overall UI is updated following the [acquisiton of Data Mechanics by Spot](https://spot.io/blog/accelerating-wave-big-data/)
+- Coming Next: Driver memory usage, Automated tuning recommendations, Make Delight accessible while the app is running.
 
 ## Architecture
 
@@ -82,8 +83,8 @@ But even if you use Python, you'll have to determine the Scala version used by y
 
 | Config                             | Explanation                                                                                                                                      | Default value    |
 | :--------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------- | :--------------- |
-| `spark.delight.accessToken.secret` | An access token to authenticate yourself with Data Mechanics Delight. If the access token is missing, the listener will not stream events        | (none)           |
-| `spark.delight.appNameOverride`    | The name of the app that will appear in Data Mechanics Delight. This is only useful if your platform does not allow you to set `spark.app.name`. | `spark.app.name` |
+| `spark.delight.accessToken.secret` | An access token to authenticate yourself with Delight. If the access token is missing, the listener will not stream events        | (none)           |
+| `spark.delight.appNameOverride`    | The name of the app that will appear in Delight. This is only useful if your platform does not allow you to set `spark.app.name`. | `spark.app.name` |
 
 ### Advanced configurations
 
@@ -92,9 +93,9 @@ You should not need to change the values of these configurations though, so drop
 
 | Config                                                  | Explanation                                                                                                                                                                                                                               | Default value                                   |
 | :------------------------------------------------------ | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---------------------------------------------- |
-| `spark.delight.collector.url`                           | URL of the Data Mechanics Delight collector API                                                                                                                                                                                           | https://api.delight.datamechanics.co/collector/ |
-| `spark.delight.buffer.maxNumEvents`                     | The number of Spark events to reach before triggering a call to Data Mechanics Collector API. Special events like job ends also trigger a call.                                                                                           | 1000                                            |
-| `spark.delight.payload.maxNumEvents`                    | The maximum number of Spark events to be sent in one call to Data Mechanics Collector API.                                                                                                                                                | 10000                                           |
+| `spark.delight.collector.url`                           | URL of the Delight collector API                                                                                                                                                                                           | https://api.delight.datamechanics.co/collector/ |
+| `spark.delight.buffer.maxNumEvents`                     | The number of Spark events to reach before triggering a call to Delight Collector API. Special events like job ends also trigger a call.                                                                                           | 1000                                            |
+| `spark.delight.payload.maxNumEvents`                    | The maximum number of Spark events to be sent in one call to Delight Collector API.                                                                                                                                                | 10000                                           |
 | `spark.delight.heartbeatIntervalSecs`                   | (Internal config) the interval at which the listener send an heartbeat requests to the API. It allow us to detect if the app was prematurely finished and start the processing ASAP                                                       | 10s                                             |
 | `spark.delight.pollingIntervalSecs`                     | (Internal config) the interval at which the object responsible for calling the API checks whether there are new payloads to be sent                                                                                                       | 0.5s                                            |
 | `spark.delight.maxPollingIntervalSecs`                  | (Internal config) upon connection error, the polling interval increases exponentially until this value. It returns to its initial value once a call to the API passes through                                                             | 60s                                             |
@@ -121,7 +122,7 @@ Delight consists of two components:
 
 Delight collects Spark event logs. This is non-sensitive metadata about your Spark application execution (for example, for each Spark task there is metadata on memory usage, CPU usage, network traffic). Delight does not record any sensitive information (like the data that your application operates on).
 ‍
-This data is encrypted with your access token and sent over HTTPS to the Data Mechanics backend. Your access token guarantees that the metrics collected will only be visible to yourself (and to your colleagues, if you signed up with your company's Google account). 
+This data is encrypted with your access token and sent over HTTPS to the Delight backend. Your access token guarantees that the metrics collected will only be visible to yourself (and to your colleagues, if you signed up with your company's Google account). 
 
 This data is automatically deleted 30 days its collection, and it is not shared with any third party.
 
@@ -129,7 +130,7 @@ This data is automatically deleted 30 days its collection, and it is not shared 
 
 The efficiency ratio is calculated as the sum of the duration of all the Spark tasks, divided by the sum of the core uptime of your Spark executors. 
 
-An efficiency score of 75% means that on average, your Spark executor cores are running Spark tasks three quarter of the time. A low efficiency score means that you are wasting a lot of your compute resources. The [Data Mechanics platform](https://www.datamechanics.co) automatically tunes your Spark application configurations to make them more efficient!
+An efficiency score of 75% means that on average, your Spark executor cores are running Spark tasks three quarter of the time. A low efficiency score means that you are wasting a lot of your compute resources. The [Ocean for Apache Spark platform](https://spot.io/products/ocean-apache-spark/) automatically tunes your Spark application configurations to make them more efficient!
 
 ### Is Delight accessible while the app is running?
 
