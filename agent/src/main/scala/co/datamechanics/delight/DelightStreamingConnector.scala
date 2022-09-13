@@ -14,10 +14,12 @@ import org.apache.http.impl.client.DefaultHttpClient
 import org.apache.spark.internal.Logging
 import org.apache.spark.scheduler.SparkListenerEvent
 import org.apache.spark.{JsonProtocolProxy, SparkConf}
+import org.json4s.JValue
 import org.json4s.jackson.JsonMethods.{compact, render}
 
 import java.util.concurrent.atomic.AtomicBoolean
 import scala.collection.{immutable, mutable}
+import scala.util.Try
 
 /** A class responsible for sending messages to the Data Mechanics collector API
   *
@@ -45,6 +47,28 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
   if (accessTokenOption.isEmpty) {
     logWarning(
       "Delight is not activated because an access token is missing. Go to https://www.datamechanics.co/delight to generate one."
+    )
+  }
+
+  private val oldSparkEventToJsonMethod = Try(
+    JsonProtocolProxy.jsonProtocol.getClass
+      .getDeclaredMethod("sparkEventToJson", classOf[SparkListenerEvent])
+  ).toOption
+
+  private val newSparkEventToJsonStringMethod = Try(
+    JsonProtocolProxy.jsonProtocol.getClass
+      .getDeclaredMethod(
+        "sparkEventToJsonString",
+        classOf[SparkListenerEvent]
+      )
+  ).toOption
+
+  private val sparkEventSerializerMethodIsDefined =
+    oldSparkEventToJsonMethod.isDefined || newSparkEventToJsonStringMethod.isDefined
+
+  if (!sparkEventSerializerMethodIsDefined) {
+    logWarning(
+      "Delight is not activated because: SparkEvent serializer method was not found"
     )
   }
 
@@ -153,7 +177,7 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
     shouldLogDuration,
     "enqueueEvent"
   ) {
-    if (accessTokenOption.nonEmpty) {
+    if (accessTokenOption.nonEmpty && sparkEventSerializerMethodIsDefined) {
       val bufferSize = eventsBuffer.synchronized {
         eventsBuffer += event
         eventsBuffer.length
@@ -231,9 +255,23 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
     */
   private def serializeEvent(event: SparkListenerEvent): Option[String] = {
     try {
-      Some(
-        compact(render(JsonProtocolProxy.jsonProtocol.sparkEventToJson(event)))
-      )
+      if (oldSparkEventToJsonMethod.isDefined) {
+        Some(
+          compact(
+            render(
+              oldSparkEventToJsonMethod.get
+                .invoke(JsonProtocolProxy.jsonProtocol, event)
+                .asInstanceOf[JValue]
+            )
+          )
+        )
+      } else {
+        Some(
+          newSparkEventToJsonStringMethod.get
+            .invoke(JsonProtocolProxy.jsonProtocol, event)
+            .asInstanceOf[String]
+        )
+      }
     } catch {
       case e: Exception =>
         logWarning(
