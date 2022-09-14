@@ -38,8 +38,9 @@ download_2_4_7_2_12: (download_spark_distribution 'https://archive.apache.org/di
 download_3_0_1: (download_spark_distribution 'https://archive.apache.org/dist/spark/spark-3.0.1/spark-3.0.1-bin-hadoop3.2.tgz')
 download_3_1_1: (download_spark_distribution 'https://archive.apache.org/dist/spark/spark-3.1.1/spark-3.1.1-bin-hadoop3.2.tgz')
 download_3_2_0: (download_spark_distribution 'https://archive.apache.org/dist/spark/spark-3.2.0/spark-3.2.0-bin-hadoop3.2.tgz')
+download_3_3_0: (download_spark_distribution 'https://archive.apache.org/dist/spark/spark-3.3.0/spark-3.3.0-bin-hadoop3.tgz')
 
-download_all_spark_distributions: download_2_3_2 download_2_4_0 download_2_4_7 download_2_4_7_2_12 download_3_0_1 download_3_1_1 download_3_2_0
+download_all_spark_distributions: download_2_3_2 download_2_4_0 download_2_4_7 download_2_4_7_2_12 download_3_0_1 download_3_1_1 download_3_2_0 download_3_3_0
 
 run_test_app spark_distribution_folder spark_version scala_version:
     #!/bin/bash
@@ -111,6 +112,7 @@ run_2_4_7_2_12: (run_test_app 'spark_distributions/spark-2.4.7-bin-without-hadoo
 run_3_0_1: (run_test_app 'spark_distributions/spark-3.0.1-bin-hadoop3.2' '3.0.1' '2.12')
 run_3_1_1: (run_test_app 'spark_distributions/spark-3.1.1-bin-hadoop3.2' '3.1.1' '2.12')
 run_3_2_0: (run_test_app 'spark_distributions/spark-3.2.0-bin-hadoop3.2' '3.2.0' '2.12')
+run_3_3_0: (run_test_app 'spark_distributions/spark-3.3.0-bin-hadoop3' '3.3.0' '2.12')
 
 run_local_jar_2_3_2: (run_test_app_local_jar 'spark_distributions/spark-2.3.2-bin-hadoop2.7' '2.3.2' '2.11')
 run_local_jar_2_4_0: (run_test_app_local_jar 'spark_distributions/spark-2.4.0-bin-hadoop2.7' '2.4.0' '2.11')
@@ -119,7 +121,9 @@ run_local_jar_2_4_7_2_12: (run_test_app_local_jar 'spark_distributions/spark-2.4
 run_local_jar_3_0_1: (run_test_app_local_jar 'spark_distributions/spark-3.0.1-bin-hadoop3.2' '3.0.1' '2.12')
 run_local_jar_3_1_1: (run_test_app_local_jar 'spark_distributions/spark-3.1.1-bin-hadoop3.2' '3.1.1' '2.12')
 run_local_jar_3_2_0: (run_test_app_local_jar 'spark_distributions/spark-3.2.0-bin-hadoop3.2' '3.2.0' '2.12')
+run_local_jar_3_3_0: (run_test_app_local_jar 'spark_distributions/spark-3.3.0-bin-hadoop3' '3.3.0' '2.12')
 
+run_docker_3_3_0: (run_test_app_docker 'datamechanics/spark:jvm-only-3.3.0-dm18' '3.3.0' '2.12')
 run_docker_3_2_0: (run_test_app_docker 'datamechanics/spark:jvm-only-3.2.0-dm15' '3.2.0' '2.12')
 run_docker_3_1_1: (run_test_app_docker 'datamechanics/spark:jvm-only-3.1.1-dm12' '3.1.1' '2.12')
 run_docker_3_0_1: (run_test_app_docker 'datamechanics/spark:jvm-only-3.0.1-dm12' '3.0.1' '2.12')
