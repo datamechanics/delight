@@ -11,12 +11,16 @@ case class StreamingPayload(
     dmAppId: DmAppId,
     data: String,
     counters: Counters,
-    sentAt: Long
+    sentAt: Long,
+    pipelineId: String,
+    jobId: String
 ) {
   def toJson: JObject =
     merge(
       dmAppId.toJson,
       JObject(
+        JField("pipelineId", JString(pipelineId)),
+        JField("jobId", JString(jobId)),
         JField("sentAt", JLong(sentAt)),
         JField("counters", counters.toJson),
         JField(
@@ -31,12 +35,16 @@ object StreamingPayload {
   def apply(
       dmAppId: DmAppId,
       data: Seq[String],
-      counters: Counters
+      counters: Counters,
+      pipelineId: String,
+      jobId: String
   ): StreamingPayload = {
     StreamingPayload(
       dmAppId,
       data.mkString("", "\n", "\n"),
       counters,
+      pipelineId,
+      jobId,
       currentTime
     )
   }

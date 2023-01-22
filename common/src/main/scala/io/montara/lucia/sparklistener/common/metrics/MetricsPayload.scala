@@ -10,12 +10,16 @@ import java.util.Base64
 case class MetricsPayload(
     dmAppId: DmAppId,
     data: String,
-    sentAt: Long
+    sentAt: Long,
+    pipelineId: String,
+    jobId: String
 ) {
   def toJson: JObject =
     merge(
       dmAppId.toJson,
       JObject(
+        JField("pipelineId", JString(pipelineId)),
+        JField("jobId", JString(jobId)),
         JField("sentAt", JLong(sentAt)),
         JField(
           "data",
@@ -26,7 +30,18 @@ case class MetricsPayload(
 }
 
 object MetricsPayload {
-  def apply(dmAppId: DmAppId, data: Seq[String]): MetricsPayload = {
-    MetricsPayload(dmAppId, data.mkString("", "\n", "\n"), currentTime)
+  def apply(
+      dmAppId: DmAppId,
+      data: Seq[String],
+      pipelineId: String,
+      jobId: String
+  ): MetricsPayload = {
+    MetricsPayload(
+      dmAppId,
+      data.mkString("", "\n", "\n"),
+      currentTime,
+      pipelineId,
+      jobId
+    )
   }
 }

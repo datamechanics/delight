@@ -18,6 +18,8 @@ import scala.concurrent.duration.{FiniteDuration, SECONDS}
 
 class MetricsCollector(hostname: String, sparkConf: SparkConf) extends Logging {
   private val dmAppId = DmAppId(Configs.getDMAppId(sparkConf))
+  private val jobId = Configs.getJobId(sparkConf)
+  private val pipelineId = Configs.getDMAppId(pipelineId)
   private val collectorURL = Configs.collectorUrl(sparkConf).stripSuffix("/")
 
   private val started: AtomicBoolean = new AtomicBoolean(false)
@@ -53,7 +55,9 @@ class MetricsCollector(hostname: String, sparkConf: SparkConf) extends Logging {
         publishMetrics(
           MetricsPayload(
             dmAppId,
-            memoryMetrics
+            memoryMetrics,
+            pipelineId,
+            jobId
           )
         )
         MetricsQueue.synchronized {

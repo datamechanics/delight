@@ -21,7 +21,21 @@ object Configs {
       }
   }
 
-  def delightUrl(sparkConf: SparkConf): String = {
+  def pipelineId(sparkConf: SparkConf): String = {
+    sparkConf.get(
+      "spark.lucia.sparklistener.pipelineId",
+      null
+    )
+  }
+
+  def jobId(sparkConf: SparkConf): String = {
+    sparkConf.get(
+      "spark.lucia.sparklistener.jobId",
+      null
+    )
+  }
+
+  def luciaSparkListenerUrl(sparkConf: SparkConf): String = {
     sparkConf.get(
       "spark.lucia.sparklistener.url",
       "https://sparklistener.lucia.montara.io/"
