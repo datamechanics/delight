@@ -21,14 +21,14 @@ object Configs {
       }
   }
 
-  def pipelineId(sparkConf: SparkConf): String = {
+  def getPipelineId(sparkConf: SparkConf): String = {
     sparkConf.get(
       "spark.lucia.sparklistener.pipelineId",
       null
     )
   }
 
-  def jobId(sparkConf: SparkConf): String = {
+  def getJobId(sparkConf: SparkConf): String = {
     sparkConf.get(
       "spark.lucia.sparklistener.jobId",
       null
