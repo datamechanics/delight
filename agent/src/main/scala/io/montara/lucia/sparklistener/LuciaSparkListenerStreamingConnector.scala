@@ -28,7 +28,10 @@ class LuciaSparkListenerStreamingConnector(sparkConf: SparkConf)
     extends Logging {
 
   private val dmAppId = DmAppId(Configs.getDMAppId(sparkConf))
-  private val delightURL = Configs.delightUrl(sparkConf).stripSuffix("/")
+  private val jobId = Configs.getJobId(sparkConf)
+  private val pipelineId = Configs.getDMAppId(pipelineId)
+  private val luciaSparkListenerUrl =
+    Configs.luciaSparkListenerUrl(sparkConf).stripSuffix("/")
   private val collectorURL = Configs.collectorUrl(sparkConf).stripSuffix("/")
   private val bufferMaxSize = Configs.bufferMaxSize(sparkConf)
   private val payloadMaxSize = Configs.payloadMaxSize(sparkConf)
@@ -229,7 +232,7 @@ class LuciaSparkListenerStreamingConnector(sparkConf: SparkConf)
       }
       sendAck()
       logInfo(
-        s"Application will be available in a few minutes on Delight at this url: $delightURL/apps/$dmAppId"
+        s"Application will be available in a few minutes on Delight at this url: $luciaSparkListenerUrl/apps/$dmAppId"
       )
     }
 
@@ -293,7 +296,9 @@ class LuciaSparkListenerStreamingConnector(sparkConf: SparkConf)
               Counters(
                 eventsCounter + serializedEvents.length,
                 payloadCounter + 1
-              )
+              ),
+              pipelineId,
+              jobId
             )
           )
           pendingEvents
@@ -344,7 +349,7 @@ class LuciaSparkListenerStreamingConnector(sparkConf: SparkConf)
         }
         logInfo("Started LuciaSparkListenerStreamingConnector heartbeat thread")
         logInfo(
-          s"Application will be available on Delight a few minutes after it completes at this url: $delightURL/apps/$dmAppId"
+          s"Application will be available on Delight a few minutes after it completes at this url: $luciaSparkListenerUrl/apps/$dmAppId"
         )
       }
     }
