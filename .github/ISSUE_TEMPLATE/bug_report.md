@@ -1,10 +1,9 @@
 ---
 name: Bug report
 about: Create a report to help us improve
-title: ''
+title: ""
 labels: bug
-assignees: ''
-
+assignees: ""
 ---
 
 **Describe the bug**
@@ -12,6 +11,7 @@ A clear and concise description of what the bug is.
 
 **To Reproduce**
 Steps to reproduce the behavior:
+
 1. Go to '...'
 2. Click on '....'
 3. Scroll down to '....'
@@ -24,11 +24,12 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots to help explain your problem.
 
 **Context**
+
 - Platform:
 - Platform version:
 - Spark version:
 - Scala version:
-- Delight version: _check it out [here](https://api.delight.datamechanics.co/version)_
+- Delight version: _check it out [here](https://api.sparklistener.lucia.montara.io/version)_
 
 **Additional context**
 Add any other context about the problem here.

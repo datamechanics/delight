@@ -1,4 +1,4 @@
-package co.datamechanics.delight.dto
+package io.montara.lucia.sparklistener.dto
 
 import org.json4s.JsonAST.JInt
 import org.json4s.{JField, JObject}

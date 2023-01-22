@@ -1,4 +1,4 @@
-package co.datamechanics.delight.common
+package io.montara.lucia.sparklistener.common
 
 import org.apache.spark.SparkConf
 
@@ -7,11 +7,11 @@ import scala.concurrent.duration._
 object Configs {
 
   def isEdge(sparkConf: SparkConf): Boolean = {
-    sparkConf.getBoolean("spark.delight.edge", false)
+    sparkConf.getBoolean("spark.lucia.sparklistener.edge", false)
   }
 
   def getDMAppId(sparkConf: SparkConf): String = {
-    val configName = "spark.delight.dmAppId"
+    val configName = "spark.lucia.sparklistener.dmAppId"
     sparkConf
       .getOption(configName)
       .getOrElse {
@@ -22,61 +22,75 @@ object Configs {
   }
 
   def delightUrl(sparkConf: SparkConf): String = {
-    sparkConf.get("spark.delight.url", "https://delight.datamechanics.co/")
+    sparkConf.get(
+      "spark.lucia.sparklistener.url",
+      "https://sparklistener.lucia.montara.io/"
+    )
   }
 
   def collectorUrl(sparkConf: SparkConf): String = {
     sparkConf.get(
-      "spark.delight.collector.url",
-      "https://api.delight.datamechanics.co/collector/"
+      "spark.lucia.sparklistener.collector.url",
+      "https://api.sparklistener.lucia.montara.io/collector/"
     )
   }
 
   def bufferMaxSize(sparkConf: SparkConf): Int = {
-    sparkConf.getInt("spark.delight.buffer.maxNumEvents", 1000)
+    sparkConf.getInt("spark.lucia.sparklistener.buffer.maxNumEvents", 1000)
   }
 
   def payloadMaxSize(sparkConf: SparkConf): Int = {
-    sparkConf.getInt("spark.delight.payload.maxNumEvents", 10000)
+    sparkConf.getInt("spark.lucia.sparklistener.payload.maxNumEvents", 10000)
   }
 
   def accessTokenOption(sparkConf: SparkConf): Option[String] = {
     sparkConf.getOption(
-      "spark.delight.accessToken.secret"
+      "spark.lucia.sparklistener.accessToken.secret"
     ) // secret is added here so that Spark redacts this config
   }
 
   def heartbeatInterval(sparkConf: SparkConf): FiniteDuration = {
-    sparkConf.getDouble("spark.delight.heartbeatIntervalSecs", 10).seconds
+    sparkConf
+      .getDouble("spark.lucia.sparklistener.heartbeatIntervalSecs", 10)
+      .seconds
   }
 
   def pollingInterval(sparkConf: SparkConf): FiniteDuration = {
-    sparkConf.getDouble("spark.delight.pollingIntervalSecs", 0.5).seconds
+    sparkConf
+      .getDouble("spark.lucia.sparklistener.pollingIntervalSecs", 0.5)
+      .seconds
   }
 
   def maxPollingInterval(sparkConf: SparkConf): FiniteDuration = {
-    sparkConf.getDouble("spark.delight.maxPollingIntervalSecs", 60).seconds
+    sparkConf
+      .getDouble("spark.lucia.sparklistener.maxPollingIntervalSecs", 60)
+      .seconds
   }
 
   def maxWaitOnEnd(sparkConf: SparkConf): FiniteDuration = {
-    sparkConf.getDouble("spark.delight.maxWaitOnEndSecs", 10).seconds
+    sparkConf
+      .getDouble("spark.lucia.sparklistener.maxWaitOnEndSecs", 10)
+      .seconds
   }
 
   def waitForPendingPayloadsSleepInterval(
       sparkConf: SparkConf
   ): FiniteDuration = {
     sparkConf
-      .getDouble("spark.delight.waitForPendingPayloadsSleepIntervalSecs", 1)
+      .getDouble(
+        "spark.lucia.sparklistener.waitForPendingPayloadsSleepIntervalSecs",
+        1
+      )
       .seconds
   }
 
   def logDuration(sparkConf: SparkConf): Boolean = {
-    sparkConf.getBoolean("spark.delight.logDuration", false)
+    sparkConf.getBoolean("spark.lucia.sparklistener.logDuration", false)
   }
 
   private def generateDMAppId(sparkConf: SparkConf): String = {
     val appName = sparkConf
-      .getOption("spark.delight.appNameOverride")
+      .getOption("spark.lucia.sparklistener.appNameOverride")
       .orElse(
         sparkConf.getOption("spark.databricks.clusterUsageTags.clusterName")
       )

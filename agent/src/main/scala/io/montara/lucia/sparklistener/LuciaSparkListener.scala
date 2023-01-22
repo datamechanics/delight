@@ -1,18 +1,20 @@
-package co.datamechanics.delight
-import co.datamechanics.delight.common.Configs
-import co.datamechanics.delight.common.Utils.time
-import co.datamechanics.delight.common.metrics.MetricsCollector
+package io.montara.lucia.sparklistener
+import io.montara.lucia.sparklistener.common.Configs
+import io.montara.lucia.sparklistener.common.Utils.time
+import io.montara.lucia.sparklistener.common.metrics.MetricsCollector
 
 import java.util.concurrent.atomic.AtomicBoolean
 import org.apache.spark.internal.Logging
 import org.apache.spark.scheduler._
 import org.apache.spark.SparkConf
 
-class DelightListener(sparkConf: SparkConf) extends SparkListener with Logging {
+class LuciaSparkListener(sparkConf: SparkConf)
+    extends SparkListener
+    with Logging {
 
   /** Adds Delight version to the Spark config
     */
-  sparkConf.set("spark.delight.version", Configs.delightVersion)
+  sparkConf.set("spark.lucia.sparklistener.version", Configs.delightVersion)
 
   /** Activates memory metrics collection for Spark 3.0.0 and above.
     * For Spark versions below 3.0.0, these configs have no effect.
@@ -23,7 +25,7 @@ class DelightListener(sparkConf: SparkConf) extends SparkListener with Logging {
   private val shouldLogDuration = Configs.logDuration(sparkConf)
 
   private val streamingConnector =
-    DelightStreamingConnector.getOrCreate(sparkConf)
+    LuciaSparkListenerStreamingConnector.getOrCreate(sparkConf)
 
   private val metricsCollector =
     MetricsCollector.getOrCreate("driver", sparkConf)

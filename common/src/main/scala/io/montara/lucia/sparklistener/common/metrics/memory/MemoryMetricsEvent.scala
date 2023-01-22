@@ -1,6 +1,6 @@
-package co.datamechanics.delight.common.metrics.memory
+package io.montara.lucia.sparklistener.common.metrics.memory
 
-import co.datamechanics.delight.common.metrics.MetricsEvent
+import io.montara.lucia.sparklistener.common.metrics.MetricsEvent
 
 object MemoryMetricsEvent {
   def apply(host: String, memoryMetrics: MemoryMetrics): MetricsEvent = {

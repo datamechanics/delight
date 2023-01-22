@@ -8,10 +8,10 @@ This document assumes that you have created an account and generated an access t
 Add the following options to your `spark-submit` call:
 
 ```bash
---packages co.datamechanics:delight_<replace-with-your-scala-version-2.11-or-2.12>:latest-SNAPSHOT
+--packages io.montara.lucia:sparklistener_<replace-with-your-scala-version-2.11-or-2.12>:latest-SNAPSHOT
 --repositories https://oss.sonatype.org/content/repositories/snapshots
---conf spark.delight.accessToken.secret=<replace-with-your-access-token>
---conf spark.extraListeners=co.datamechanics.delight.DelightListener
+--conf spark.lucia.sparklistener.accessToken.secret=<replace-with-your-access-token>
+--conf spark.extraListeners=io.montara.lucia.sparklistener.LuciaSparkListener
 ```
 
 A real-world example of submission instrumented with Delight would look like this:
@@ -21,10 +21,10 @@ A real-world example of submission instrumented with Delight would look like thi
 ./bin/spark-submit \
   --class org.apache.spark.examples.SparkPi \
   --master yarn \
-  --packages co.datamechanics:delight_<replace-with-your-scala-version-2.11-or-2.12>:latest-SNAPSHOT \
+  --packages io.montara.lucia:sparklistener_<replace-with-your-scala-version-2.11-or-2.12>:latest-SNAPSHOT \
   --repositories https://oss.sonatype.org/content/repositories/snapshots \
-  --conf spark.delight.accessToken.secret=<replace-with-your-access-token> \
-  --conf spark.extraListeners=co.datamechanics.delight.DelightListener \
+  --conf spark.lucia.sparklistener.accessToken.secret=<replace-with-your-access-token> \
+  --conf spark.extraListeners=io.montara.lucia.sparklistener.LuciaSparkListener \
   --deploy-mode cluster \
   --executor-memory 20G \
   --num-executors 50 \

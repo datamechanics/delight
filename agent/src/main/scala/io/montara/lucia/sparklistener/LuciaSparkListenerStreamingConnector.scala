@@ -1,14 +1,12 @@
-package co.datamechanics.delight
-
-import co.datamechanics.delight.common.Configs
-import co.datamechanics.delight.common.Network.sendRequest
-import co.datamechanics.delight.common.Utils.{
+import io.montara.lucia.sparklistener.common.Configs
+import io.montara.lucia.sparklistener.common.Network.sendRequest
+import io.montara.lucia.sparklistener.common.Utils.{
   currentTime,
   startRepeatThread,
   time
 }
-import co.datamechanics.delight.common.dto.DmAppId
-import co.datamechanics.delight.dto.{Counters, StreamingPayload}
+import io.montara.lucia.sparklistener.common.dto.DmAppId
+import io.montara.lucia.sparklistener.dto.{Counters, StreamingPayload}
 import org.apache.http.client.HttpClient
 import org.apache.http.impl.client.DefaultHttpClient
 import org.apache.spark.internal.Logging
@@ -26,7 +24,8 @@ import scala.util.Try
   * - Events are bufferized then send as gzip/base64 bulks as part of a Json Payload
   * - Exponential wait time before retry upon error
   */
-class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
+class LuciaSparkListenerStreamingConnector(sparkConf: SparkConf)
+    extends Logging {
 
   private val dmAppId = DmAppId(Configs.getDMAppId(sparkConf))
   private val delightURL = Configs.delightUrl(sparkConf).stripSuffix("/")
@@ -348,12 +347,12 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
         startRepeatThread(currentPollingInterval) {
           publishPendingEvents()
         }
-        logInfo("Started DelightStreamingConnector polling thread")
+        logInfo("Started LuciaSparkListenerStreamingConnector polling thread")
         startRepeatThread(heartbeatInterval) {
           logDebug("Logged heartbeat")
           sendHeartbeat()
         }
-        logInfo("Started DelightStreamingConnector heartbeat thread")
+        logInfo("Started LuciaSparkListenerStreamingConnector heartbeat thread")
         logInfo(
           s"Application will be available on Delight a few minutes after it completes at this url: $delightURL/apps/$dmAppId"
         )
@@ -362,17 +361,22 @@ class DelightStreamingConnector(sparkConf: SparkConf) extends Logging {
 
 }
 
-object DelightStreamingConnector {
+object LuciaSparkListenerStreamingConnector {
 
-  private var sharedConnector: Option[DelightStreamingConnector] = None
+  private var sharedConnector: Option[LuciaSparkListenerStreamingConnector] =
+    None
 
   /** A connector common to the whole Scala application.
     *
     * - Will become useful if we have more than a SparkListener sending messages!
     */
-  def getOrCreate(sparkConf: SparkConf): DelightStreamingConnector = {
+  def getOrCreate(
+      sparkConf: SparkConf
+  ): LuciaSparkListenerStreamingConnector = {
     if (sharedConnector.isEmpty) {
-      sharedConnector = Some(new DelightStreamingConnector(sparkConf))
+      sharedConnector = Some(
+        new LuciaSparkListenerStreamingConnector(sparkConf)
+      )
     }
     sharedConnector.get
   }

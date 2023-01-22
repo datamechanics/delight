@@ -1,7 +1,7 @@
-package co.datamechanics.delight.dto
+package io.montara.lucia.sparklistener.dto
 
-import co.datamechanics.delight.common.Utils.{compressString, currentTime}
-import co.datamechanics.delight.common.dto.DmAppId
+import io.montara.lucia.sparklistener.common.Utils.{compressString, currentTime}
+import io.montara.lucia.sparklistener.common.dto.DmAppId
 import org.json4s.Merge._
 import org.json4s.{JField, JLong, JObject, JString}
 
@@ -21,7 +21,7 @@ case class StreamingPayload(
         JField("counters", counters.toJson),
         JField(
           "data",
-          JString(Base64.getEncoder.encodeToString(compressString(data)))
+          JString(data)
         )
       )
     )

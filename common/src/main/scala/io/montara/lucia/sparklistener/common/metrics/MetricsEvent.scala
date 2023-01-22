@@ -1,6 +1,6 @@
-package co.datamechanics.delight.common.metrics
+package io.montara.lucia.sparklistener.common.metrics
 
-import co.datamechanics.delight.common.Utils.currentTime
+import io.montara.lucia.sparklistener.common.Utils.currentTime
 import org.json4s.jackson.JsonMethods.compact
 import org.json4s.{JField, JLong, JObject, JString}
 
