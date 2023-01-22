@@ -43,9 +43,9 @@ object StreamingPayload {
       dmAppId,
       data.mkString("", "\n", "\n"),
       counters,
+      currentTime,
       pipelineId,
-      jobId,
-      currentTime
+      jobId
     )
   }
 }
