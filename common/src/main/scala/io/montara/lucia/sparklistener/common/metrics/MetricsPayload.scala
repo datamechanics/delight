@@ -1,7 +1,7 @@
-package co.datamechanics.delight.common.metrics
+package io.montara.lucia.sparklistener.common.metrics
 
-import co.datamechanics.delight.common.Utils.{compressString, currentTime}
-import co.datamechanics.delight.common.dto.DmAppId
+import io.montara.lucia.sparklistener.common.Utils.{compressString, currentTime}
+import io.montara.lucia.sparklistener.common.dto.DmAppId
 import org.json4s.Merge.merge
 import org.json4s.{JField, JLong, JObject, JString}
 
@@ -19,7 +19,7 @@ case class MetricsPayload(
         JField("sentAt", JLong(sentAt)),
         JField(
           "data",
-          JString(Base64.getEncoder.encodeToString(compressString(data)))
+          JString(data)
         )
       )
     )

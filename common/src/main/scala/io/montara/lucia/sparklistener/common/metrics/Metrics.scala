@@ -1,4 +1,4 @@
-package co.datamechanics.delight.common.metrics
+package io.montara.lucia.sparklistener.common.metrics
 
 import org.json4s.JObject
 

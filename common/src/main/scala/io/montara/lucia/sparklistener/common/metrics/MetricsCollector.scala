@@ -1,10 +1,10 @@
-package co.datamechanics.delight.common.metrics
+package io.montara.lucia.sparklistener.common.metrics
 
-import co.datamechanics.delight.common.Configs
-import co.datamechanics.delight.common.Network.sendRequest
-import co.datamechanics.delight.common.Utils.startRepeatThread
-import co.datamechanics.delight.common.dto.DmAppId
-import co.datamechanics.delight.common.metrics.memory.{
+import io.montara.lucia.sparklistener.common.Configs
+import io.montara.lucia.sparklistener.common.Network.sendRequest
+import io.montara.lucia.sparklistener.common.Utils.startRepeatThread
+import io.montara.lucia.sparklistener.common.dto.DmAppId
+import io.montara.lucia.sparklistener.common.metrics.memory.{
   MemoryMetricsEvent,
   MemoryMetricsGetter
 }

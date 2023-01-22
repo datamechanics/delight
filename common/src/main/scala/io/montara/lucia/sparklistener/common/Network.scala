@@ -1,4 +1,4 @@
-package co.datamechanics.delight.common
+package io.montara.lucia.sparklistener.common
 
 import org.apache.http.HttpResponse
 import org.apache.http.client.HttpClient

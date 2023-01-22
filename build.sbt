@@ -27,8 +27,8 @@ lazy val common = (project in file("common"))
 
 lazy val agent = (project in file("agent"))
   .settings(
-    name := "delight",
-    organization := "co.datamechanics",
+    name := "sparklistener",
+    organization := "io.montara.lucia",
     crossScalaVersions := Seq("2.11.12", "2.12.12"),
     libraryDependencies += "org.apache.spark" %% "spark-core" % "2.4.3" % "provided",
     publishTo := sonatypePublishToBundle.value

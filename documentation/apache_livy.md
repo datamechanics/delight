@@ -7,10 +7,10 @@ This document assumes that you have created an account and generated an access t
 Add the following key-value pairs to the `conf` (Spark configuration properties) field:
 
 ```bash
-spark.jars.packages=co.datamechanics:delight_<replace-with-your-scala-version-2.11-or-2.12>:latest-SNAPSHOT
+spark.jars.packages=io.montara.lucia:sparklistener_<replace-with-your-scala-version-2.11-or-2.12>:latest-SNAPSHOT
 spark.jars.repositories=https://oss.sonatype.org/content/repositories/snapshots
-spark.delight.accessToken.secret=<your access token>
-spark.extraListeners=co.datamechanics.delight.DelightListener
+spark.lucia.sparklistener.accessToken.secret=<your access token>
+spark.extraListeners=io.montara.lucia.sparklistener.LuciaSparkListener
 ```
 
 A real-world example of submission instrumented with Delight would look like this:
@@ -27,10 +27,10 @@ POST /batches
   "numExecutors": 2,
   "name": "application-name",
   "conf": {
-    "spark.jars.packages": "co.datamechanics:delight_<replace-with-your-scala-version-2.11-or-2.12>:latest-SNAPSHOT",
+    "spark.jars.packages": "io.montara.lucia:sparklistener_<replace-with-your-scala-version-2.11-or-2.12>:latest-SNAPSHOT",
     "spark.jars.repositories": "https://oss.sonatype.org/content/repositories/snapshots",
-    "spark.delight.accessToken.secret": "<your access token>",
-    "spark.extraListeners": "co.datamechanics.delight.DelightListener"
+    "spark.lucia.sparklistener.accessToken.secret": "<your access token>",
+    "spark.extraListeners": "io.montara.lucia.sparklistener.LuciaSparkListener"
   },
   "args": ["1000"]
 }

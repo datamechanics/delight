@@ -1,4 +1,4 @@
-package co.datamechanics.delight.common.metrics.memory
+package io.montara.lucia.sparklistener.common.metrics.memory
 
 import org.apache.spark.PackageProxy.utils
 import org.apache.spark.SparkException

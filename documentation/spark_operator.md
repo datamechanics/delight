@@ -14,10 +14,10 @@ kind: SparkApplication
 spec:
   deps:
     jars:
-      - "https://oss.sonatype.org/content/repositories/snapshots/co/datamechanics/delight_<replace-with-your-scala-version-2.11-or-2.12>/latest-SNAPSHOT/delight_<replace-with-your-scala-version-2.11-or-2.12>-latest-SNAPSHOT.jar"
+      - "https://oss.sonatype.org/content/repositories/snapshots/co/datamechanics/sparklistener_<replace-with-your-scala-version-2.11-or-2.12>/latest-SNAPSHOT/sparklistener_<replace-with-your-scala-version-2.11-or-2.12>-latest-SNAPSHOT.jar"
   sparkConf:
-    "spark.delight.accessToken.secret": "<replace-with-your-access-token>"
-    "spark.extraListeners": "co.datamechanics.delight.DelightListener"
+    "spark.lucia.sparklistener.accessToken.secret": "<replace-with-your-access-token>"
+    "spark.extraListeners": "io.montara.lucia.sparklistener.LuciaSparkListener"
   #...
 ```
 
@@ -44,10 +44,10 @@ spec:
     type: Never
   deps:
     jars:
-      - "https://oss.sonatype.org/content/repositories/snapshots/co/datamechanics/delight_2.12/latest-SNAPSHOT/delight_2.12-latest-SNAPSHOT.jar"
+      - "https://oss.sonatype.org/content/repositories/snapshots/co/datamechanics/sparklistener_2.12/latest-SNAPSHOT/sparklistener_2.12-latest-SNAPSHOT.jar"
   sparkConf:
-    "spark.delight.accessToken.secret": "<replace-with-your-access-token>"
-    "spark.extraListeners": "co.datamechanics.delight.DelightListener"
+    "spark.lucia.sparklistener.accessToken.secret": "<replace-with-your-access-token>"
+    "spark.extraListeners": "io.montara.lucia.sparklistener.LuciaSparkListener"
   volumes:
     - name: "test-volume"
       hostPath:
@@ -77,4 +77,4 @@ spec:
 > Delight provides information about memory usage for Spark version 3.0.0 and above.
 > For this feature to work, you'll need the proc filesystem (`procfs`) and the command `pgrep` available in your runtime.
 >
-> You may have to install `pgrep` in your Docker image. In Debian-based systems for example, `pgrep` is available as part of the `procps` package that you can install with ```apt-get install procps```.
+> You may have to install `pgrep` in your Docker image. In Debian-based systems for example, `pgrep` is available as part of the `procps` package that you can install with `apt-get install procps`.

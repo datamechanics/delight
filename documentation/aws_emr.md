@@ -20,10 +20,10 @@ When creating a cluster in Step execution launch mode, AWS EMR lets you add a [S
 In the configuration window of the Spark step, add the following lines in the text box named `Spark-submit options`:
 
 ```java
---packages co.datamechanics:delight_<replace-with-your-scala-version-2.11-or-2.12>:latest-SNAPSHOT
+--packages io.montara.lucia:sparklistener_<replace-with-your-scala-version-2.11-or-2.12>:latest-SNAPSHOT
 --repositories https://oss.sonatype.org/content/repositories/snapshots
---conf spark.extraListeners=co.datamechanics.delight.DelightListener
---conf spark.delight.accessToken.secret=<replace-with-your-access-token>
+--conf spark.extraListeners=io.montara.lucia.sparklistener.LuciaSparkListener
+--conf spark.lucia.sparklistener.accessToken.secret=<replace-with-your-access-token>
 ```
 
 Don't forget to replace the placeholders!
@@ -36,20 +36,23 @@ Below is a working example with `emr-6.1.0` and Spark `3.0.0`:
 Here's the content of the text fields in the example screenshot:
 
 Spark-submit options:
+
 ```
 --class org.apache.spark.examples.SparkPi
---packages co.datamechanics:delight_2.12:latest-SNAPSHOT
+--packages io.montara.lucia:sparklistener_2.12:latest-SNAPSHOT
 --repositories https://oss.sonatype.org/content/repositories/snapshots
---conf spark.extraListeners=co.datamechanics.delight.DelightListener
---conf spark.delight.accessToken.secret=<replace-with-your-access-token>
+--conf spark.extraListeners=io.montara.lucia.sparklistener.LuciaSparkListener
+--conf spark.lucia.sparklistener.accessToken.secret=<replace-with-your-access-token>
 ```
 
 Application location:
+
 ```
 /usr/lib/spark/examples/jars/spark-examples.jar
 ```
 
 Arguments:
+
 ```
 100
 ```

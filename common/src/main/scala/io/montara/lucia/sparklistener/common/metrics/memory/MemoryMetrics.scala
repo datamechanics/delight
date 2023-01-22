@@ -1,6 +1,6 @@
-package co.datamechanics.delight.common.metrics.memory
+package io.montara.lucia.sparklistener.common.metrics.memory
 
-import co.datamechanics.delight.common.metrics.Metrics
+import io.montara.lucia.sparklistener.common.metrics.Metrics
 import org.json4s.{JField, JLong, JObject}
 
 case class MemoryMetrics(

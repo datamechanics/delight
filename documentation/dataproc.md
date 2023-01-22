@@ -19,9 +19,9 @@ When configuring the job, add the following properties to the application:
 
 ```
 spark.jars.repositories: https://oss.sonatype.org/content/repositories/snapshots
-spark.jars.packages: co.datamechanics:delight_<replace-with-your-scala-version-2.11-or-2.12>:latest-SNAPSHOT
-spark.extraListeners: co.datamechanics.delight.DelightListener
-spark.delight.accessToken.secret: <replace-with-your-access-token>
+spark.jars.packages: io.montara.lucia:sparklistener_<replace-with-your-scala-version-2.11-or-2.12>:latest-SNAPSHOT
+spark.extraListeners: io.montara.lucia.sparklistener.LuciaSparkListener
+spark.lucia.sparklistener.accessToken.secret: <replace-with-your-access-token>
 ```
 
 Don't forget to replace the placeholders!
@@ -56,9 +56,9 @@ REGION=us-west1
 CLUSTER_NAME=delight-test-cluster
 PROPERTIES=(
     "spark.jars.repositories=https://oss.sonatype.org/content/repositories/snapshots"
-    "spark.jars.packages=co.datamechanics:delight_2.12:latest-SNAPSHOT"
-    "spark.extraListeners=co.datamechanics.delight.DelightListener"
-    "spark.delight.accessToken.secret=<replace-with-your-access-token>"
+    "spark.jars.packages=io.montara.lucia:sparklistener_2.12:latest-SNAPSHOT"
+    "spark.extraListeners=io.montara.lucia.sparklistener.LuciaSparkListener"
+    "spark.lucia.sparklistener.accessToken.secret=<replace-with-your-access-token>"
 )
 
 function join { local IFS="$1"; shift; echo "$*"; }
@@ -89,7 +89,7 @@ gcloud dataproc workflow-templates instantiate $TEMPLATE_NAME \
 
 Then move on to the [Dataproc console](https://console.cloud.google.com/dataproc/clusters) to see the cluster being created and the job execution.
 
-Note that in the example script we use the Dataproc version `preview` (parameter `--image-version` in `set-managed-cluster`) and we set the Scala version accordingly to 2.12 in `co.datamechanics:delight_2.12:latest-SNAPSHOT`.
+Note that in the example script we use the Dataproc version `preview` (parameter `--image-version` in `set-managed-cluster`) and we set the Scala version accordingly to 2.12 in `io.montara.lucia:sparklistener_2.12:latest-SNAPSHOT`.
 If you use another Dataproc version, you will have to adjust the Scala version:
 
 | Dataproc version | Spark version | Scala version |
