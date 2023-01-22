@@ -2,8 +2,6 @@
 
 This document details instructions to install Delight on AWS EMR.
 
-It assumes that you have created an account and generated an access token on the [Delight website](https://www.datamechanics.co/delight).
-
 There are two ways (or "launch modes") to run a EMR spark cluster:
 
 - the Step execution launch mode creates an ephemeral cluster to run operations on it,
@@ -23,7 +21,6 @@ In the configuration window of the Spark step, add the following lines in the te
 --packages io.montara.lucia:sparklistener_<replace-with-your-scala-version-2.11-or-2.12>:latest-SNAPSHOT
 --repositories https://oss.sonatype.org/content/repositories/snapshots
 --conf spark.extraListeners=io.montara.lucia.sparklistener.LuciaSparkListener
---conf spark.lucia.sparklistener.accessToken.secret=<replace-with-your-access-token>
 ```
 
 Don't forget to replace the placeholders!
@@ -42,7 +39,6 @@ Spark-submit options:
 --packages io.montara.lucia:sparklistener_2.12:latest-SNAPSHOT
 --repositories https://oss.sonatype.org/content/repositories/snapshots
 --conf spark.extraListeners=io.montara.lucia.sparklistener.LuciaSparkListener
---conf spark.lucia.sparklistener.accessToken.secret=<replace-with-your-access-token>
 ```
 
 Application location:

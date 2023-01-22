@@ -43,12 +43,6 @@ object Configs {
     sparkConf.getInt("spark.lucia.sparklistener.payload.maxNumEvents", 10000)
   }
 
-  def accessTokenOption(sparkConf: SparkConf): Option[String] = {
-    sparkConf.getOption(
-      "spark.lucia.sparklistener.accessToken.secret"
-    ) // secret is added here so that Spark redacts this config
-  }
-
   def heartbeatInterval(sparkConf: SparkConf): FiniteDuration = {
     sparkConf
       .getDouble("spark.lucia.sparklistener.heartbeatIntervalSecs", 10)

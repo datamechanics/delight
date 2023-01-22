@@ -2,8 +2,6 @@
 
 This document details instructions to install Delight on Databricks.
 
-It assumes that you have created an account and generated an access token on the [Delight website](https://www.datamechanics.co/delight).
-
 The easiest way to enable Delight on Databricks is to define an [init script](https://docs.databricks.com/clusters/init-scripts.html) that configures Delight on cluster startup.
 
 ## Global init script or cluster-scoped init script?
@@ -25,7 +23,6 @@ Install the following init script as a [cluster-scoped init script](https://docs
 #!/bin/bash
 
 SCALA_VERSION="<replace-with-your-scala-version-2.11-or-2.12>"
-ACCESS_TOKEN="<replace-with-your-access-token>"
 
 cat > /databricks/spark/dbconf/java/extra.security <<- EOF
 # This file has been modified to support Let's Encrypt certificates for the use of Delight (GCM not disabled)
@@ -42,7 +39,6 @@ if [[ $DB_IS_DRIVER = "TRUE" ]]; then
         cat > $SPARK_DEFAULTS_FILE <<- EOF
         [driver] {
           "spark.extraListeners"             = "com.databricks.backend.daemon.driver.DBCEventLoggingListener,io.montara.lucia.sparklistener.LuciaSparkListener"
-          "spark.lucia.sparklistener.accessToken.secret" = "$ACCESS_TOKEN"
         }
 EOF
 fi

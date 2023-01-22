@@ -19,7 +19,6 @@ import scala.concurrent.duration.{FiniteDuration, SECONDS}
 class MetricsCollector(hostname: String, sparkConf: SparkConf) extends Logging {
   private val dmAppId = DmAppId(Configs.getDMAppId(sparkConf))
   private val collectorURL = Configs.collectorUrl(sparkConf).stripSuffix("/")
-  private val accessTokenOption = Configs.accessTokenOption(sparkConf)
 
   private val started: AtomicBoolean = new AtomicBoolean(false)
   private val MetricsQueue = new mutable.Queue[MetricsEvent]()
@@ -33,7 +32,6 @@ class MetricsCollector(hostname: String, sparkConf: SparkConf) extends Logging {
       sendRequest(
         httpClientMetrics,
         url,
-        accessTokenOption.get,
         payload.toJson,
         "Metrics payload sent successfully"
       )

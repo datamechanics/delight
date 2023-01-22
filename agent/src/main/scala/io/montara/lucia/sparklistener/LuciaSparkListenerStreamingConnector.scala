@@ -32,7 +32,6 @@ class LuciaSparkListenerStreamingConnector(sparkConf: SparkConf)
   private val collectorURL = Configs.collectorUrl(sparkConf).stripSuffix("/")
   private val bufferMaxSize = Configs.bufferMaxSize(sparkConf)
   private val payloadMaxSize = Configs.payloadMaxSize(sparkConf)
-  private val accessTokenOption = Configs.accessTokenOption(sparkConf)
   private val pollingInterval = Configs.pollingInterval(sparkConf)
   private val heartbeatInterval = Configs.heartbeatInterval(sparkConf)
   private val maxPollingInterval = Configs.maxPollingInterval(sparkConf)
@@ -42,12 +41,6 @@ class LuciaSparkListenerStreamingConnector(sparkConf: SparkConf)
   private val shouldLogDuration = Configs.logDuration(sparkConf)
 
   implicit val formats = org.json4s.DefaultFormats
-
-  if (accessTokenOption.isEmpty) {
-    logWarning(
-      "Delight is not activated because an access token is missing. Go to https://www.datamechanics.co/delight to generate one."
-    )
-  }
 
   private val oldSparkEventToJsonMethod = Try(
     JsonProtocolProxy.jsonProtocol.getClass
@@ -103,7 +96,6 @@ class LuciaSparkListenerStreamingConnector(sparkConf: SparkConf)
       sendRequest(
         httpClientHeartbeat,
         url,
-        accessTokenOption.get,
         dmAppId.toJson,
         "Successfully sent heartbeat"
       )
@@ -125,7 +117,6 @@ class LuciaSparkListenerStreamingConnector(sparkConf: SparkConf)
       sendRequest(
         httpClient,
         url,
-        accessTokenOption.get,
         dmAppId.toJson,
         "Successfully sent ack"
       )
@@ -148,7 +139,6 @@ class LuciaSparkListenerStreamingConnector(sparkConf: SparkConf)
         sendRequest(
           httpClient,
           url,
-          accessTokenOption.get,
           payload.toJson,
           "Successfully sent payload"
         )
@@ -176,7 +166,7 @@ class LuciaSparkListenerStreamingConnector(sparkConf: SparkConf)
     shouldLogDuration,
     "enqueueEvent"
   ) {
-    if (accessTokenOption.nonEmpty && sparkEventSerializerMethodIsDefined) {
+    if (sparkEventSerializerMethodIsDefined) {
       val bufferSize = eventsBuffer.synchronized {
         eventsBuffer += event
         eventsBuffer.length

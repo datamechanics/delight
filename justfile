@@ -56,7 +56,6 @@ run_test_app spark_distribution_folder spark_version scala_version:
     --master 'local[*]' \
     --packages io.montara.lucia:sparklistener_{{scala_version}}:${VERSION}-SNAPSHOT \
     --repositories https://oss.sonatype.org/content/repositories/snapshots \
-    --conf spark.lucia.sparklistener.accessToken.secret={{api_key}} \
     --conf spark.lucia.sparklistener.collector.url={{collector_url}} \
     --conf spark.extraListeners=io.montara.lucia.sparklistener.LuciaSparkListener \
     {{spark_distribution_folder}}/examples/jars/spark-examples_{{scala_version}}-{{spark_version}}.jar \
@@ -75,7 +74,6 @@ run_test_app_local_jar spark_distribution_folder spark_version scala_version:
     --class org.apache.spark.examples.SparkPi \
     --master 'local[*]' \
     --jars agent/target/scala-{{scala_version}}/sparklistener_{{scala_version}}-${VERSION}-SNAPSHOT.jar \
-    --conf spark.lucia.sparklistener.accessToken.secret={{api_key}} \
     --conf spark.lucia.sparklistener.collector.url={{collector_url}} \
     --conf spark.lucia.sparklistener.logDuration=true \
     --conf spark.extraListeners=io.montara.lucia.sparklistener.LuciaSparkListener \
@@ -96,7 +94,6 @@ run_test_app_docker image spark_version scala_version:
     {{image}} \
     /opt/spark/bin/spark-submit --class org.apache.spark.examples.SparkPi --master 'local[*]' \
     --jars /opt/spark/delight.jar \
-    --conf spark.lucia.sparklistener.accessToken.secret={{api_key}} \
     --conf spark.lucia.sparklistener.collector.url={{collector_url}} \
     --conf spark.lucia.sparklistener.logDuration=true \
     --conf spark.extraListeners=io.montara.lucia.sparklistener.LuciaSparkListener \
