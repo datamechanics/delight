@@ -82,10 +82,9 @@ But even if you use Python, you'll have to determine the Scala version used by y
 
 ## Configurations
 
-| Config                                         | Explanation                                                                                                                       | Default value    |
-| :--------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------- | :--------------- |
-| `spark.lucia.sparklistener.accessToken.secret` | An access token to authenticate yourself with Delight. If the access token is missing, the listener will not stream events        | (none)           |
-| `spark.lucia.sparklistener.appNameOverride`    | The name of the app that will appear in Delight. This is only useful if your platform does not allow you to set `spark.app.name`. | `spark.app.name` |
+| Config                                      | Explanation                                                                                                                       | Default value    |
+| :------------------------------------------ | :-------------------------------------------------------------------------------------------------------------------------------- | :--------------- |
+| `spark.lucia.sparklistener.appNameOverride` | The name of the app that will appear in Delight. This is only useful if your platform does not allow you to set `spark.app.name`. | `spark.app.name` |
 
 ### Advanced configurations
 

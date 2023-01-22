@@ -2,14 +2,11 @@
 
 This document details instructions to install Delight when using [Apache Livy REST API](https://livy.incubator.apache.org/docs/latest/rest-api.html), using the /sessions or the /batches routes.
 
-This document assumes that you have created an account and generated an access token on the [Delight website](https://www.datamechanics.co/delight).
-
 Add the following key-value pairs to the `conf` (Spark configuration properties) field:
 
 ```bash
 spark.jars.packages=io.montara.lucia:sparklistener_<replace-with-your-scala-version-2.11-or-2.12>:latest-SNAPSHOT
 spark.jars.repositories=https://oss.sonatype.org/content/repositories/snapshots
-spark.lucia.sparklistener.accessToken.secret=<your access token>
 spark.extraListeners=io.montara.lucia.sparklistener.LuciaSparkListener
 ```
 
@@ -29,7 +26,6 @@ POST /batches
   "conf": {
     "spark.jars.packages": "io.montara.lucia:sparklistener_<replace-with-your-scala-version-2.11-or-2.12>:latest-SNAPSHOT",
     "spark.jars.repositories": "https://oss.sonatype.org/content/repositories/snapshots",
-    "spark.lucia.sparklistener.accessToken.secret": "<your access token>",
     "spark.extraListeners": "io.montara.lucia.sparklistener.LuciaSparkListener"
   },
   "args": ["1000"]

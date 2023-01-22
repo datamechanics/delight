@@ -3,14 +3,11 @@
 You can try Delight with a local run on your machine!
 [Download a Spark distribution](https://spark.apache.org/downloads.html) and run an instrumented Spark submit from the root folder.
 
-This document assumes that you have created an account and generated an access token on the [Delight website](https://www.datamechanics.co/delight).
-
 To activate Delight, you'll need to add the following options to your `spark-submit` call:
 
 ```bash
 --packages io.montara.lucia:sparklistener_<replace-with-your-scala-version-2.11-or-2.12>:latest-SNAPSHOT
 --repositories https://oss.sonatype.org/content/repositories/snapshots
---conf spark.lucia.sparklistener.accessToken.secret=<replace-with-your-access-token>
 --conf spark.extraListeners=io.montara.lucia.sparklistener.LuciaSparkListener
 ```
 
@@ -23,7 +20,6 @@ Here's a working example for Spark 3.0.1:
   --master 'local[2]' \
   --packages io.montara.lucia:sparklistener_2.12:latest-SNAPSHOT \
   --repositories https://oss.sonatype.org/content/repositories/snapshots \
-  --conf spark.lucia.sparklistener.accessToken.secret=<replace-with-your-access-token> \
   --conf spark.extraListeners=io.montara.lucia.sparklistener.LuciaSparkListener \
   examples/jars/spark-examples_2.12-3.0.1.jar \
   100
@@ -38,7 +34,6 @@ And a working example for Spark 2.4.7:
   --master 'local[2]' \
   --packages io.montara.lucia:sparklistener_2.11:latest-SNAPSHOT \
   --repositories https://oss.sonatype.org/content/repositories/snapshots \
-  --conf spark.lucia.sparklistener.accessToken.secret=<replace-with-your-access-token> \
   --conf spark.extraListeners=io.montara.lucia.sparklistener.LuciaSparkListener \
   examples/jars/spark-examples_2.11-2.4.7.jar \
   100

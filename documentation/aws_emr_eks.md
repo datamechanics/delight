@@ -2,8 +2,6 @@
 
 This document details instructions to install Delight on AWS EMR on EKS.
 
-It assumes that you have created an account and generated an access token on the [Delight website](https://www.datamechanics.co/delight).
-
 EMR on EKS currently only supports cluster/job creation through use of the aws emr-containers cli.
 
 To submit a spark application, complete the following steps to initialize your cluster/environment:
@@ -46,7 +44,6 @@ To submit a spark application, complete the following steps to initialize your c
   > --packages io.montara.lucia:sparklistener_<replace-with-your-scala-version-2.11-or-2.12>:latest-SNAPSHOT
   > --repositories https://oss.sonatype.org/content/repositories/snapshots
   > --conf spark.extraListeners=io.montara.lucia.sparklistener.LuciaSparkListener
-  > --conf spark.lucia.sparklistener.accessToken.secret=<replace-with-your-access-token>
   > ```
 
   > ````
@@ -58,7 +55,6 @@ To submit a spark application, complete the following steps to initialize your c
   > --release-label emr-6.2.0-latest \
   > --job-driver '{"sparkSubmitJobDriver": {"entryPoint": "local:///usr/lib/spark/examples/src/main/python/pi.py","sparkSubmitParameters": "--packages io.montara.lucia:sparklistener_2.12:latest-SNAPSHOT
   > --repositories https://oss.sonatype.org/content/repositories/snapshots \
-  > --conf spark.lucia.sparklistener.accessToken.secret=<your delight api token> \
   > --conf spark.extraListeners=io.montara.lucia.sparklistener.LuciaSparkListener \
   > --conf spark.executor.instances=<desired number of instances> \
   > --conf spark.executor.memory=<desired memory> \

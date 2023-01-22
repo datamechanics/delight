@@ -3,8 +3,6 @@
 This document details instructions to use Delight with the [Spark on Kubernetes operator](https://github.com/GoogleCloudPlatform/spark-on-k8s-operator).
 Here's the official [quick start guide](https://github.com/GoogleCloudPlatform/spark-on-k8s-operator/blob/master/docs/quick-start-guide.md) to install the operator on your Kubernetes cluster.
 
-It assumes that you have created an account and generated an access token on the [Delight website](https://www.datamechanics.co/delight).
-
 To enable Delight in a Spark application launched with the Spark on Kubernetes operator, add the following block to your `sparkapplication` manifest:
 
 ```yaml
@@ -16,7 +14,6 @@ spec:
     jars:
       - "https://oss.sonatype.org/content/repositories/snapshots/co/datamechanics/sparklistener_<replace-with-your-scala-version-2.11-or-2.12>/latest-SNAPSHOT/sparklistener_<replace-with-your-scala-version-2.11-or-2.12>-latest-SNAPSHOT.jar"
   sparkConf:
-    "spark.lucia.sparklistener.accessToken.secret": "<replace-with-your-access-token>"
     "spark.extraListeners": "io.montara.lucia.sparklistener.LuciaSparkListener"
   #...
 ```
@@ -46,7 +43,6 @@ spec:
     jars:
       - "https://oss.sonatype.org/content/repositories/snapshots/co/datamechanics/sparklistener_2.12/latest-SNAPSHOT/sparklistener_2.12-latest-SNAPSHOT.jar"
   sparkConf:
-    "spark.lucia.sparklistener.accessToken.secret": "<replace-with-your-access-token>"
     "spark.extraListeners": "io.montara.lucia.sparklistener.LuciaSparkListener"
   volumes:
     - name: "test-volume"

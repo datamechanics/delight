@@ -9,3 +9,4 @@ target/
 spark_distributions/
 .env
 .bsp
+.metals

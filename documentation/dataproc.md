@@ -2,8 +2,6 @@
 
 This document details instructions to install Delight on Google Cloud Dataproc.
 
-It assumes that you have created an account and generated an access token on the [Delight website](https://www.datamechanics.co/delight).
-
 There are two ways to run Spark application on Dataproc:
 
 - as a [job](https://cloud.google.com/dataproc/docs/concepts/jobs/life-of-a-job) on an existing cluster,
@@ -21,7 +19,6 @@ When configuring the job, add the following properties to the application:
 spark.jars.repositories: https://oss.sonatype.org/content/repositories/snapshots
 spark.jars.packages: io.montara.lucia:sparklistener_<replace-with-your-scala-version-2.11-or-2.12>:latest-SNAPSHOT
 spark.extraListeners: io.montara.lucia.sparklistener.LuciaSparkListener
-spark.lucia.sparklistener.accessToken.secret: <replace-with-your-access-token>
 ```
 
 Don't forget to replace the placeholders!
@@ -58,7 +55,6 @@ PROPERTIES=(
     "spark.jars.repositories=https://oss.sonatype.org/content/repositories/snapshots"
     "spark.jars.packages=io.montara.lucia:sparklistener_2.12:latest-SNAPSHOT"
     "spark.extraListeners=io.montara.lucia.sparklistener.LuciaSparkListener"
-    "spark.lucia.sparklistener.accessToken.secret=<replace-with-your-access-token>"
 )
 
 function join { local IFS="$1"; shift; echo "$*"; }
