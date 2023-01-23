@@ -15,7 +15,7 @@ jobs:
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
-+     - uses: olafurpg/setup-scala@v11
-      - name: Compile
+      - uses: olafurpg/setup-scala@v11
+      - name: compile
         run: sbt compile
       - run: echo "🍏 This job's status is ${{ job.status }}."
