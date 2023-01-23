@@ -11,3 +11,4 @@ spark_distributions/
 .bsp
 .metals
 .vscode
+.bloop
