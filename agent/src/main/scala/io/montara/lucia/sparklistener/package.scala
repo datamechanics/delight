@@ -1,3 +1,3 @@
 package io.montara.lucia
 
-package object delight {}
+package object sparklistener {}
