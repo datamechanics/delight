@@ -49,6 +49,7 @@ object Network extends Logging {
 
     val postMethod = new HttpPost(url)
     postMethod.setEntity(requestEntity)
+    postMethod.addHeader("Content-Type", "application/json")
 
     val httpResponse: HttpResponse = client.execute(postMethod)
 
