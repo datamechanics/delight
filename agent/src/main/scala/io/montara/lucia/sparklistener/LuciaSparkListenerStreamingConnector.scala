@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 import scala.collection.{immutable, mutable}
 import scala.util.Try
 
-/** A class responsible for sending messages to the Data Mechanics collector API
+/** A class responsible for sending messages to the Montara collector API
   *
   * - Events are bufferized then send as gzip/base64 bulks as part of a Json Payload
   * - Exponential wait time before retry upon error
@@ -65,7 +65,7 @@ class LuciaSparkListenerStreamingConnector(sparkConf: SparkConf)
 
   if (!sparkEventSerializerMethodIsDefined) {
     logWarning(
-      "Delight is not activated because: SparkEvent serializer method was not found"
+      "Lucia spark listener is not activated because: SparkEvent serializer method was not found"
     )
   }
 
@@ -89,7 +89,7 @@ class LuciaSparkListenerStreamingConnector(sparkConf: SparkConf)
     */
   private val started: AtomicBoolean = new AtomicBoolean(false)
 
-  /** Send a "/heartbeat" request to Data Mechanics collector API ("the server")
+  /** Send a "/heartbeat" request to Montara collector API ("the server")
     *
     * - Uses sendRequest and catch thrown exceptions
     * - Uses a dedicated httpClient to avoid collision with the one used by the main thread
@@ -110,7 +110,7 @@ class LuciaSparkListenerStreamingConnector(sparkConf: SparkConf)
     }
   }
 
-  /** Send a "/ack" request to Data Mechanics collector API ("the server")
+  /** Send a "/ack" request to Montara collector API ("the server")
     *
     * - Uses sendRequest and catch thrown exceptions
     * - Payload is a Json Object containing the dm_app_id
@@ -131,7 +131,7 @@ class LuciaSparkListenerStreamingConnector(sparkConf: SparkConf)
     }
   }
 
-  /** Send a "/bulk" request to Data Mechanics collector API ("the server")
+  /** Send a "/bulk" request to Montara collector API ("the server")
     *
     * - Uses sendRequest and catch thrown exceptions
     * - Payload is a is a Json Object representing a StreamingPayload
@@ -234,7 +234,7 @@ class LuciaSparkListenerStreamingConnector(sparkConf: SparkConf)
       }
       sendAck()
       logInfo(
-        s"Application will be available in a few minutes on Delight at this url: $luciaSparkListenerUrl/apps/$dmAppId"
+        s"Application will be available in a few minutes on Lucia spark listener at this url: $luciaSparkListenerUrl/apps/$dmAppId"
       )
     }
 
@@ -351,7 +351,7 @@ class LuciaSparkListenerStreamingConnector(sparkConf: SparkConf)
         }
         logInfo("Started LuciaSparkListenerStreamingConnector heartbeat thread")
         logInfo(
-          s"Application will be available on Delight a few minutes after it completes at this url: $luciaSparkListenerUrl/apps/$dmAppId"
+          s"Application will be available on Lucia spark listener a few minutes after it completes at this url: $luciaSparkListenerUrl/apps/$dmAppId"
         )
       }
     }

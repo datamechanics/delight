@@ -29,7 +29,7 @@ If applicable, add screenshots to help explain your problem.
 - Platform version:
 - Spark version:
 - Scala version:
-- Delight version: _check it out [here](https://api.sparklistener.lucia.montara.io/version)_
+- LuciaSparkLisener version: _check it out [here](https://api.sparklistener.lucia.montara.io/version)_
 
 **Additional context**
 Add any other context about the problem here.

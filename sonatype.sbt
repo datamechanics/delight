@@ -11,9 +11,9 @@ scmInfo := Some(
 )
 developers := List(
   Developer(
-    id = "ImpSy",
-    name = "Sebastien Maintrot",
-    email = "sebastien@datamechanics.co",
-    url = url("https://github.com/ImpSy")
+    id = "montara-io",
+    name = "Montara io",
+    email = "montara-dev@montara.co",
+    url = url("https://github.com/montara-io")
   )
 )

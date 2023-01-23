@@ -90,10 +90,10 @@ run_test_app_docker image spark_version scala_version:
     fi
 
     docker run --rm \
-    -v $(pwd)/agent/target/scala-{{scala_version}}/sparklistener_{{scala_version}}-${VERSION}-SNAPSHOT.jar:/opt/spark/delight.jar \
+    -v $(pwd)/agent/target/scala-{{scala_version}}/sparklistener_{{scala_version}}-${VERSION}-SNAPSHOT.jar:/opt/spark/luciaSparkListener.jar \
     {{image}} \
     /opt/spark/bin/spark-submit --class org.apache.spark.examples.SparkPi --master 'local[*]' \
-    --jars /opt/spark/delight.jar \
+    --jars /opt/spark/luciaSparkListener.jar \
     --conf spark.lucia.sparklistener.collector.url={{collector_url}} \
     --conf spark.lucia.sparklistener.logDuration=true \
     --conf spark.extraListeners=io.montara.lucia.sparklistener.LuciaSparkListener \
