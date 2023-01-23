@@ -1,3 +1,5 @@
+package io.montara.lucia.sparklistener
+
 import io.montara.lucia.sparklistener.common.Configs
 import io.montara.lucia.sparklistener.common.Network.sendRequest
 import io.montara.lucia.sparklistener.common.Utils.{
