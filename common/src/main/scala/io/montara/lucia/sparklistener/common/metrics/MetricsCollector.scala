@@ -20,7 +20,8 @@ class MetricsCollector(hostname: String, sparkConf: SparkConf) extends Logging {
   private val dmAppId = DmAppId(Configs.getDMAppId(sparkConf))
   private val jobId = Configs.getJobId(sparkConf)
   private val pipelineId = Configs.getPipelineId(sparkConf)
-  private val collectorURL = Configs.collectorUrl(sparkConf).stripSuffix("/")
+  private val luciaSparkListenerUrl =
+    Configs.luciaSparkListenerUrl(sparkConf).stripSuffix("/")
 
   private val started: AtomicBoolean = new AtomicBoolean(false)
   private val MetricsQueue = new mutable.Queue[MetricsEvent]()
@@ -28,7 +29,7 @@ class MetricsCollector(hostname: String, sparkConf: SparkConf) extends Logging {
   private val threads = new mutable.ListBuffer[Thread]()
 
   private def publishMetrics(payload: MetricsPayload): Unit = {
-    val url = s"$collectorURL/metrics"
+    val url = s"$luciaSparkListenerUrl"
 
     try {
       sendRequest(

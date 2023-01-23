@@ -38,14 +38,7 @@ object Configs {
   def luciaSparkListenerUrl(sparkConf: SparkConf): String = {
     sparkConf.get(
       "spark.lucia.sparklistener.url",
-      "https://sparklistener.lucia.montara.io/"
-    )
-  }
-
-  def collectorUrl(sparkConf: SparkConf): String = {
-    sparkConf.get(
-      "spark.lucia.sparklistener.collector.url",
-      "https://api.sparklistener.lucia.montara.io/collector/"
+      null
     )
   }
 

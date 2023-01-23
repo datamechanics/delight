@@ -34,7 +34,6 @@ class LuciaSparkListenerStreamingConnector(sparkConf: SparkConf)
   private val pipelineId = Configs.getPipelineId(sparkConf)
   private val luciaSparkListenerUrl =
     Configs.luciaSparkListenerUrl(sparkConf).stripSuffix("/")
-  private val collectorURL = Configs.collectorUrl(sparkConf).stripSuffix("/")
   private val bufferMaxSize = Configs.bufferMaxSize(sparkConf)
   private val payloadMaxSize = Configs.payloadMaxSize(sparkConf)
   private val pollingInterval = Configs.pollingInterval(sparkConf)
@@ -89,14 +88,14 @@ class LuciaSparkListenerStreamingConnector(sparkConf: SparkConf)
     */
   private val started: AtomicBoolean = new AtomicBoolean(false)
 
-  /** Send a "/heartbeat" request to Montara collector API ("the server")
+  /** Send a heartbeat request to Montara collector API ("the server")
     *
     * - Uses sendRequest and catch thrown exceptions
     * - Uses a dedicated httpClient to avoid collision with the one used by the main thread
     * - Payload is a Json Object containing the dm_app_id
     */
   def sendHeartbeat(): Unit = time(shouldLogDuration, "sendHeartbeat") {
-    val url = s"$collectorURL/heartbeat"
+    val url = s"$luciaSparkListenerUrl"
     try {
       sendRequest(
         httpClientHeartbeat,
@@ -110,13 +109,13 @@ class LuciaSparkListenerStreamingConnector(sparkConf: SparkConf)
     }
   }
 
-  /** Send a "/ack" request to Montara collector API ("the server")
+  /** Send a "ack" request to Montara collector API ("the server")
     *
     * - Uses sendRequest and catch thrown exceptions
     * - Payload is a Json Object containing the dm_app_id
     */
   def sendAck(): Unit = {
-    val url = s"$collectorURL/ack"
+    val url = s"$luciaSparkListenerUrl"
 
     try {
       sendRequest(
@@ -131,14 +130,14 @@ class LuciaSparkListenerStreamingConnector(sparkConf: SparkConf)
     }
   }
 
-  /** Send a "/bulk" request to Montara collector API ("the server")
+  /** Send a bulk request to Montara collector API ("the server")
     *
     * - Uses sendRequest and catch thrown exceptions
     * - Payload is a is a Json Object representing a StreamingPayload
     */
   private def publishPayload(payload: StreamingPayload): Unit =
     time(shouldLogDuration, "publishPayload") {
-      val url = s"$collectorURL/bulk"
+      val url = s"$luciaSparkListenerUrl"
 
       try {
         sendRequest(
