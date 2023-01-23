@@ -29,7 +29,7 @@ object Network extends Logging {
     }.toOption.flatten
   }
 
-  /** Send a POST request to Data Mechanics collector API ("the server")
+  /** Send a POST request to Montara collector API ("the server")
     *
     * - Status Code:
     *   -> 200: Request is a success

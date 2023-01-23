@@ -12,9 +12,12 @@ class LuciaSparkListener(sparkConf: SparkConf)
     extends SparkListener
     with Logging {
 
-  /** Adds Delight version to the Spark config
+  /** Adds LuciaSparkListener version to the Spark config
     */
-  sparkConf.set("spark.lucia.sparklistener.version", Configs.delightVersion)
+  sparkConf.set(
+    "spark.lucia.sparklistener.version",
+    Configs.luciaSparkListenerVersion
+  )
 
   /** Activates memory metrics collection for Spark 3.0.0 and above.
     * For Spark versions below 3.0.0, these configs have no effect.
@@ -72,7 +75,7 @@ class LuciaSparkListener(sparkConf: SparkConf)
 
   /*
      The events that trigger a flush are the same as in org.apache.spark.scheduler.EventLoggingListener
-     (the delight that creates Spark event logs).
+     (the lucia spark listener that creates Spark event logs).
      The only difference is that onBlockUpdated does not flush, to avoid flooding.
    */
 
