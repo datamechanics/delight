@@ -32,6 +32,7 @@ class LuciaSparkListenerStreamingConnector(sparkConf: SparkConf)
   private val dmAppId = DmAppId(Configs.getDMAppId(sparkConf))
   private val jobId = Configs.getJobId(sparkConf)
   private val pipelineId = Configs.getPipelineId(sparkConf)
+  private val pipelineRunId = Configs.getPipelineRunId(sparkConf)
   private val luciaSparkListenerUrl =
     Configs.luciaSparkListenerUrl(sparkConf).stripSuffix("/")
   private val bufferMaxSize = Configs.bufferMaxSize(sparkConf)
@@ -299,6 +300,7 @@ class LuciaSparkListenerStreamingConnector(sparkConf: SparkConf)
                 payloadCounter + 1
               ),
               pipelineId,
+              pipelineRunId,
               jobId
             )
           )

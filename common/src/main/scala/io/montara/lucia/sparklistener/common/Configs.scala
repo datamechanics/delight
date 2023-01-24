@@ -28,11 +28,22 @@ object Configs {
     )
   }
 
-  def getJobId(sparkConf: SparkConf): String = {
+  def getPipelineRunId(sparkConf: SparkConf): String = {
     sparkConf.get(
-      "spark.lucia.sparklistener.jobId",
+      "spark.lucia.sparklistener.pipelineRunId",
       null
     )
+  }
+
+  def getJobId(sparkConf: SparkConf): String = {
+    val configName = "spark.lucia.sparklistener.jobId"
+    sparkConf
+      .getOption(configName)
+      .getOrElse {
+        val generatedJobId = generateJobId(sparkConf)
+        sparkConf.set(configName, generatedJobId)
+        generatedJobId
+      }
   }
 
   def luciaSparkListenerUrl(sparkConf: SparkConf): String = {
@@ -87,6 +98,19 @@ object Configs {
 
   def logDuration(sparkConf: SparkConf): Boolean = {
     sparkConf.getBoolean("spark.lucia.sparklistener.logDuration", false)
+  }
+
+  private def generateJobId(sparkConf: SparkConf): String = {
+    val appName = sparkConf
+      .getOption("spark.lucia.sparklistener.appNameOverride")
+      .orElse(
+        sparkConf.getOption("spark.databricks.clusterUsageTags.clusterName")
+      )
+      .orElse(sparkConf.getOption("spark.app.name"))
+      .getOrElse("undefined")
+    val sanitizedAppName =
+      appName.replaceAll("\\W", "-").replaceAll("--*", "-").stripSuffix("-")
+    s"$sanitizedAppName"
   }
 
   private def generateDMAppId(sparkConf: SparkConf): String = {

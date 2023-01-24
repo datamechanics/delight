@@ -13,6 +13,7 @@ case class StreamingPayload(
     counters: Counters,
     sentAt: Long,
     pipelineId: String,
+    pipelineRunId: String,
     jobId: String
 ) {
   def toJson: JObject =
@@ -20,6 +21,7 @@ case class StreamingPayload(
       dmAppId.toJson,
       JObject(
         JField("pipelineId", JString(pipelineId)),
+        JField("pipelineRunId", JString(pipelineRunId)),
         JField("jobId", JString(jobId)),
         JField("sentAt", JLong(sentAt)),
         JField("counters", counters.toJson),
@@ -37,6 +39,7 @@ object StreamingPayload {
       data: Seq[String],
       counters: Counters,
       pipelineId: String,
+      pipelineRunId: String,
       jobId: String
   ): StreamingPayload = {
     StreamingPayload(
@@ -45,6 +48,7 @@ object StreamingPayload {
       counters,
       currentTime,
       pipelineId,
+      pipelineRunId,
       jobId
     )
   }

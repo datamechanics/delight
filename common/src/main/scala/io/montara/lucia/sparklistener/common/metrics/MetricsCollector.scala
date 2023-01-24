@@ -20,6 +20,7 @@ class MetricsCollector(hostname: String, sparkConf: SparkConf) extends Logging {
   private val dmAppId = DmAppId(Configs.getDMAppId(sparkConf))
   private val jobId = Configs.getJobId(sparkConf)
   private val pipelineId = Configs.getPipelineId(sparkConf)
+  private val pipelineRunId = Configs.getPipelineRunId(sparkConf)
   private val luciaSparkListenerUrl =
     Configs.luciaSparkListenerUrl(sparkConf).stripSuffix("/")
 
@@ -58,6 +59,7 @@ class MetricsCollector(hostname: String, sparkConf: SparkConf) extends Logging {
             dmAppId,
             memoryMetrics,
             pipelineId,
+            pipelineRunId,
             jobId
           )
         )

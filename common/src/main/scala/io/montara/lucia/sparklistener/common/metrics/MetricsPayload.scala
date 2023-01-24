@@ -12,6 +12,7 @@ case class MetricsPayload(
     data: String,
     sentAt: Long,
     pipelineId: String,
+    pipelineRunId: String,
     jobId: String
 ) {
   def toJson: JObject =
@@ -19,6 +20,7 @@ case class MetricsPayload(
       dmAppId.toJson,
       JObject(
         JField("pipelineId", JString(pipelineId)),
+        JField("pipelineRunId", JString(pipelineRunId)),
         JField("jobId", JString(jobId)),
         JField("sentAt", JLong(sentAt)),
         JField(
@@ -34,6 +36,7 @@ object MetricsPayload {
       dmAppId: DmAppId,
       data: Seq[String],
       pipelineId: String,
+      pipelineRunId: String,
       jobId: String
   ): MetricsPayload = {
     MetricsPayload(
@@ -41,6 +44,7 @@ object MetricsPayload {
       data.mkString("", "\n", "\n"),
       currentTime,
       pipelineId,
+      pipelineRunId,
       jobId
     )
   }
