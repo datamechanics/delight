@@ -1,0 +1,24 @@
+$appname='pidemo-30'
+Write-Host ""aksdriver-"$appname"
+Write-Host ""aksapp-"$appname"
+
+.\spark-submit --master k8s://http://localhost:8001 `
+--deploy-mode cluster  --name  ""dri-"$appname" `
+--jars https://rgactionstdsa.blob.core.windows.net/spark/delight_2.12-latest-SNAPSHOT.jar `
+--conf spark.delight.accessToken.secret='' `
+--conf spark.extraListeners=co.datamechanics.delight.DelightListener `
+--class org.apache.spark.examples.SparkPi `
+--conf spark.delight.appNameOverride="$appname" `
+--conf spark.delight.url=http://logger-app-service.default.svc.cluster.local:9000/ `
+--conf spark.delight.collector.url=http://logger-app-service.default.svc.cluster.local:9000/collector/ `
+--conf spark.executor.instances=2 `
+--conf spark.kubernetes.executor.request.cores=1 `
+--conf spark.kubernetes.namespace=spark-test `
+--conf spark.kubernetes.container.image=docker.io/bochuxt/sparkdockerhisgory:3.1.1 `
+--conf spark.kubernetes.authenticate.driver.serviceAccountName=spark `
+https://rgactionstdsa.blob.core.windows.net/spark/spark-examples_2.12-3.3.1.jar `
+10
+
+Write-Host ""aksdriver-"$appname"
+Write-Host ""aksapp-"$appname"
+
