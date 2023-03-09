@@ -67,7 +67,7 @@ Here are the available instructions:
 
 ## Compatibility
 
-Delight is compatible with Spark `2.4.0` to Spark `3.1.1` with the following Maven coordinates:
+Delight is compatible with Spark `2.4.0` to Spark `3.3.0` with the following Maven coordinates:
 
 `co.datamechanics:delight_<replace-with-your-scala-version-2.11-or-2.12>:latest-SNAPSHOT`
 
