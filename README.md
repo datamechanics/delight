@@ -1,6 +1,9 @@
+## :warning: Delight have been shutdown on May 31st 2024 :warning:
+## All functionalities have been integrated into [NetApp's Ocean for Apache Spark](https://spot.io/product/ocean-apache-spark/)
+
 # Delight - The New & Improved Spark UI and Spark History Server
 
-[Delight](https://www.datamechanics.co/delight) is a free Spark UI & Spark History Server alternative with new metrics and visualizations that will delight you! 
+[Delight](https://www.datamechanics.co/delight) is a free Spark UI & Spark History Server alternative with new metrics and visualizations that will delight you!
 
 The Delight project is developed by [Data Mechanics](https://www.datamechanics.co), which is now part of the [Spot](https://spot.io) family. Delight works on top of any Spark platform, whether it's open-source or commercial, in the cloud or on-premise.
 
@@ -13,13 +16,13 @@ The [Delight web dashboard](https://delight.datamechanics.co) lists your complet
 
 When you click on a specific application, you access an overview screen for this application. It contains a graph of your Executor Cores Usage, broken down by categories. This graph is aligned with a timeline of your Spark jobs and stages, so that it's easy for you to correlate CPU metrics with the code of your Spark application.
 
-For example, Delight made it obvious that this application (left) suffered from a slow shuffle. 
+For example, Delight made it obvious that this application (left) suffered from a slow shuffle.
 After using instances with mounted local SSDs (right), the application performance improved by over 10x.
 
 <a href="documentation/images/before.png"><img src="documentation/images/before.png" width="45%"></a>
 <a href="documentation/images/after.png"><img src="documentation/images/after.png" width="45%"></a>
 
-Under this graph, you will get a report of the peak memory usage of your Spark executors (the overview screen shows the top 5 executors). This graph should help you tune your container memory sizes - so that memory usage stays in the 70-90% range. This graph breaks down memory usage between JVM, Python, and other processes (at the time of the peak total usage). 
+Under this graph, you will get a report of the peak memory usage of your Spark executors (the overview screen shows the top 5 executors). This graph should help you tune your container memory sizes - so that memory usage stays in the 70-90% range. This graph breaks down memory usage between JVM, Python, and other processes (at the time of the peak total usage).
 
 <p align="center">
 <a href="documentation/images/memory.png"><img src="documentation/images/memory.png" width="65%"></a>
@@ -51,7 +54,7 @@ Once your application is finished, it becomes available on the Delight hosted [d
 To use Delight:
 
 - Sign in through our [website](https://delight.datamechanics.co) using your Google account. If you want to share a single Delight dashboard, you should use your company's Google account.
-- Head to settings on the left navigation bar, and create a personal access token. This token will uniquely identify your applications in Delight - treat it as a secret. 
+- Head to settings on the left navigation bar, and create a personal access token. This token will uniquely identify your applications in Delight - treat it as a secret.
 - Follow the installation instructions below for your platform.
 
 Here are the available instructions:
@@ -122,25 +125,25 @@ Delight consists of two components:
 
 Delight collects Spark event logs. This is non-sensitive metadata about your Spark application execution (for example, for each Spark task there is metadata on memory usage, CPU usage, network traffic). Delight does not record any sensitive information (like the data that your application operates on).
 ‍
-This data is encrypted with your access token and sent over HTTPS to the Delight backend. Your access token guarantees that the metrics collected will only be visible to yourself (and to your colleagues, if you signed up with your company's Google account). 
+This data is encrypted with your access token and sent over HTTPS to the Delight backend. Your access token guarantees that the metrics collected will only be visible to yourself (and to your colleagues, if you signed up with your company's Google account).
 
 This data is automatically deleted 30 days its collection, and it is not shared with any third party.
 
 ### What is the efficiency score visible in the Delight dashboard?
 
-The efficiency ratio is calculated as the sum of the duration of all the Spark tasks, divided by the sum of the core uptime of your Spark executors. 
+The efficiency ratio is calculated as the sum of the duration of all the Spark tasks, divided by the sum of the core uptime of your Spark executors.
 
 An efficiency score of 75% means that on average, your Spark executor cores are running Spark tasks three quarter of the time. A low efficiency score means that you are wasting a lot of your compute resources. The [Ocean for Apache Spark platform](https://spot.io/products/ocean-apache-spark/) automatically tunes your Spark application configurations to make them more efficient!
 
 ### Is Delight accessible while the app is running?
 
-No, at this moment you can only access Delight once your app has completed. This means that Delight is not suited for long-running applications (like interactive clusters staying up 24x7, or streaming jobs). 
+No, at this moment you can only access Delight once your app has completed. This means that Delight is not suited for long-running applications (like interactive clusters staying up 24x7, or streaming jobs).
 
-Making Delight accessible in real time is on our roadmap. 
+Making Delight accessible in real time is on our roadmap.
 
 ### I don't have a google account, how can I sign up?
 
-At this time, the only sign in method is using a Google account. We'll be adding support for login+password authentication in the future. 
+At this time, the only sign in method is using a Google account. We'll be adding support for login+password authentication in the future.
 
 ### How can I invite a colleague to share the same Delight dashboard?
 
@@ -148,7 +151,7 @@ If you sign up using the same Google organization as your colleague, you will au
 
 ### What's your log retention? For how long can I access Delight?
 
-The Delight UI is accessible for 30 days after the app completion. After this time, the logs are deleted. 
+The Delight UI is accessible for 30 days after the app completion. After this time, the logs are deleted.
 
 There's also a limit of 10,000 apps per customer. If you reach this limit, we will start cleaning up the logs of your oldest apps.
 
@@ -171,7 +174,7 @@ If you specified `co.datamechanics:delight_2.11:latest-SNAPSHOT`, please change 
 ### I'd like to troubleshoot Delight, how can I see its logs?
 
 The Delight jar attached to your Spark driver produces troubleshooting logs within the Spark Driver logs.
-Look for the class name DelightStreamingConnector. There should be INFO logs printed when your application starts. 
+Look for the class name DelightStreamingConnector. There should be INFO logs printed when your application starts.
 
 If you don't see these logs, you may need to modify the log4j configuration file used by Spark to add this line:
 ```
